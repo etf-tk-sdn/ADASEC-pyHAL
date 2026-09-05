@@ -1,0 +1,13 @@
+
+"""
+Python Wrapper for the csr register model
+
+This code was generated from the PeakRDL-python package version 3.1.2
+
+"""
+from .csr_registers0 import csr_avalon_st_if_source_data_0x3660f5397353c16d_cls
+from .csr_registers0 import csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls
+from .csr_registers0 import csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls
+from .csr_registers0 import csr_avalon_st_if_sink_data_0x275ca516767c3381_cls
+from .csr_registers0 import csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls
+from .csr_registers0 import csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls

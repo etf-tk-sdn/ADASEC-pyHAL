@@ -1,0 +1,156 @@
+// SPDX-FileCopyrightText: 2026 Enio Kaljic
+// SPDX-License-Identifier: CERN-OHL-S-2.0
+
+addrmap csr {
+    name = "CSR";
+    desc = "Control and status registers for ADASEC-SDN.";
+
+    littleendian;
+    default accesswidth = 32;
+    default regwidth = 32;
+    default alignment = 4;
+    addressing = regalign;
+
+    regfile avalon_st_if {
+        name = "avalon_st_if";
+        desc = "Register file for the Avalon-ST source and sink interfaces.";
+
+        regfile source {
+            name = "avalon_st_if.source";
+            desc = "Register file for the Avalon-ST source interface.";
+
+            reg data {
+                name = "avalon_st_if.source.data";
+                desc = "Data register for the Avalon-ST source interface.";
+
+                field {
+                    name = "avalon_st_if.source.data.word[31:0]";
+                    desc = "32-bit data value for the Avalon-ST source interface.";
+
+                    sw = rw;
+                    hw = r;
+                } word[31:0] = 0;
+            } data;
+
+            reg control {
+                name = "avalon_st_if.source.control";
+                desc = "Control register for the Avalon-ST source interface.";
+
+                field {
+                    name = "avalon_st_if.source.control.valid";
+                    desc = "Indicates that the Avalon-ST source interface has valid data to send. Once asserted by software, the field remains asserted until the transfer is accepted by the destination.";
+
+                    sw = rw;
+                    hw = r;
+                    hwclr = true;
+                } valid[0:0] = 0;
+
+                field {
+                    name = "avalon_st_if.source.control.sop";
+                    desc = "Indicates the start of a frame on the Avalon-ST source interface.";
+
+                    sw = rw;
+                    hw = r;
+                } sop[8:8] = 0;
+
+                field {
+                    name = "avalon_st_if.source.control.eop";
+                    desc = "Indicates the end of a frame on the Avalon-ST source interface.";
+
+                    sw = rw;
+                    hw = r;
+                } eop[16:16] = 0;
+
+                field {
+                    name = "avalon_st_if.source.control.empty[1:0]";
+                    desc = "Indicates the number of empty bytes in the last word of the current frame on the Avalon-ST source interface.";
+
+                    sw = rw;
+                    hw = r;
+                } empty[25:24] = 0;
+            } control;
+
+            reg status {
+                name = "avalon_st_if.source.status";
+                desc = "Status register for the Avalon-ST source interface.";
+
+                field {
+                    name = "avalon_st_if.source.status.ready";
+                    desc = "Indicates that the destination Avalon-ST interface is ready to receive data.";
+
+                    sw = r;
+                    hw = w;
+                } ready[0:0] = 0;
+            } status;
+        } source;
+
+        regfile sink {
+            name = "avalon_st_if.sink";
+            desc = "Register file for the Avalon-ST sink interface.";
+
+            reg data {
+                name = "avalon_st_if.sink.data";
+                desc = "Data register for the Avalon-ST sink interface.";
+
+                field {
+                    name = "avalon_st_if.sink.data.word[31:0]";
+                    desc = "32-bit data value for the Avalon-ST sink interface.";
+
+                    sw = r;
+                    hw = w;
+                } word[31:0];
+            } data;
+
+            reg control {
+                name = "avalon_st_if.sink.control";
+                desc = "Control register for the Avalon-ST sink interface.";
+
+                field {
+                    name = "avalon_st_if.sink.control.ready";
+                    desc = "Indicates that the Avalon-ST sink interface is ready to accept a data transfer. Once asserted by software, the field remains asserted until a transfer occurs.";
+
+                    sw = rw;
+                    hw = r;
+                    hwclr = true;
+                } ready[0:0] = 0;
+            } control;
+
+            reg status {
+                name = "avalon_st_if.sink.status";
+                desc = "Status register for the Avalon-ST sink interface.";
+
+                field {
+                    name = "avalon_st_if.sink.status.valid";
+                    desc = "Indicates that the Avalon-ST sink interface has valid data to receive.";
+
+                    sw = r;
+                    hw = w;
+                } valid[0:0];
+
+                field {
+                    name = "avalon_st_if.sink.status.sop";
+                    desc = "Indicates the start of a frame on the Avalon-ST sink interface.";
+
+                    sw = r;
+                    hw = w;
+                } sop[8:8];
+
+                field {
+                    name = "avalon_st_if.sink.status.eop";
+                    desc = "Indicates the end of a frame on the Avalon-ST sink interface.";
+
+                    sw = r;
+                    hw = w;
+                } eop[16:16];
+
+                field {
+                    name = "avalon_st_if.sink.status.empty[1:0]";
+                    desc = "Indicates the number of empty bytes in the last word of the current frame on the Avalon-ST sink interface.";
+
+                    sw = r;
+                    hw = w;
+                } empty[25:24];
+            } status;
+        } sink;
+    } avalon_st_if;
+};
