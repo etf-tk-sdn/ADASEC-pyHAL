@@ -1,0 +1,48 @@
+	component altera_tse is
+		port (
+			clk               : in  std_logic                     := 'X';             -- clk
+			reset             : in  std_logic                     := 'X';             -- reset
+			reg_data_out      : out std_logic_vector(31 downto 0);                    -- readdata
+			reg_rd            : in  std_logic                     := 'X';             -- read
+			reg_data_in       : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
+			reg_wr            : in  std_logic                     := 'X';             -- write
+			reg_busy          : out std_logic;                                        -- waitrequest
+			reg_addr          : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- address
+			rx_afull_clk      : in  std_logic                     := 'X';             -- clk
+			rx_afull_data     : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- data
+			rx_afull_valid    : in  std_logic                     := 'X';             -- valid
+			rx_afull_channel  : in  std_logic_vector(0 downto 0)  := (others => 'X'); -- channel
+			mac_rx_clk_0      : out std_logic;                                        -- clk
+			mac_tx_clk_0      : out std_logic;                                        -- clk
+			data_rx_data_0    : out std_logic_vector(7 downto 0);                     -- data
+			data_rx_eop_0     : out std_logic;                                        -- endofpacket
+			data_rx_error_0   : out std_logic_vector(4 downto 0);                     -- error
+			data_rx_ready_0   : in  std_logic                     := 'X';             -- ready
+			data_rx_sop_0     : out std_logic;                                        -- startofpacket
+			data_rx_valid_0   : out std_logic;                                        -- valid
+			data_tx_data_0    : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- data
+			data_tx_eop_0     : in  std_logic                     := 'X';             -- endofpacket
+			data_tx_error_0   : in  std_logic                     := 'X';             -- error
+			data_tx_ready_0   : out std_logic;                                        -- ready
+			data_tx_sop_0     : in  std_logic                     := 'X';             -- startofpacket
+			data_tx_valid_0   : in  std_logic                     := 'X';             -- valid
+			pkt_class_data_0  : out std_logic_vector(4 downto 0);                     -- data
+			pkt_class_valid_0 : out std_logic;                                        -- valid
+			tx_crc_fwd_0      : in  std_logic                     := 'X';             -- export
+			tx_clk_0          : in  std_logic                     := 'X';             -- clk
+			rx_clk_0          : in  std_logic                     := 'X';             -- clk
+			set_10_0          : in  std_logic                     := 'X';             -- set_10
+			set_1000_0        : in  std_logic                     := 'X';             -- set_1000
+			eth_mode_0        : out std_logic;                                        -- eth_mode
+			ena_10_0          : out std_logic;                                        -- ena_10
+			rgmii_in_0        : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- rgmii_in
+			rgmii_out_0       : out std_logic_vector(3 downto 0);                     -- rgmii_out
+			rx_control_0      : in  std_logic                     := 'X';             -- rx_control
+			tx_control_0      : out std_logic;                                        -- tx_control
+			mdc               : out std_logic;                                        -- mdc
+			mdio_in           : in  std_logic                     := 'X';             -- mdio_in
+			mdio_out          : out std_logic;                                        -- mdio_out
+			mdio_oen          : out std_logic                                         -- mdio_oen
+		);
+	end component altera_tse;
+

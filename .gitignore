@@ -1,0 +1,32 @@
+# Quartus compilation databases and generated output in each example
+**/db/
+**/incremental_db/
+**/output_files/
+**/bitfiles/*
+!**/bitfiles/.gitkeep
+
+# Quartus user-interface and temporary state
+*.qws
+*.qdf
+**/.qsys_edit/
+**/greybox_tmp/
+
+# Questa/ModelSim generated files
+**/simulation/questa/
+transcript
+*.wlf
+*.ucdb
+**/work/
+**/questa_lib/
+**/modelsim_lib/
+
+# Local backups and editor temporary files
+*.bak
+*.orig
+*.swp
+*.swo
+*~
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
