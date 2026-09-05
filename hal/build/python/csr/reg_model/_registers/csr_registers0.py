@@ -44,23 +44,25 @@ from ...lib import FieldSizeProps, FieldMiscProps
 
 
 
-from .fields import csr_avalon_st_if_source_data_word_neg_0x55074116f9209c24_cls
-from .fields import csr_avalon_st_if_source_control_valid_0x593791e23ae3d4b3_cls
-from .fields import csr_avalon_st_if_source_control_sop_0x570ed007765679b0_cls
-from .fields import csr_avalon_st_if_source_control_eop_neg_0x78f9c145ae8fe48e_cls
-from .fields import csr_avalon_st_if_source_control_empty_neg_0x582af1ddd8bfcbc6_cls
-from .fields import csr_avalon_st_if_source_status_ready_0x548f35ffaedff6e0_cls
-from .fields import csr_avalon_st_if_sink_data_word_0xfceb3744e631d53_cls
-from .fields import csr_avalon_st_if_sink_control_ready_neg_0x32324d59367c0f61_cls
-from .fields import csr_avalon_st_if_sink_status_valid_0x5356746a877d69f2_cls
-from .fields import csr_avalon_st_if_sink_status_sop_0x1b8927812cfb0bda_cls
-from .fields import csr_avalon_st_if_sink_status_eop_neg_0x6bcbbed0cc3e1ba5_cls
-from .fields import csr_avalon_st_if_sink_status_empty_0x147033c0cdbbba49_cls
+from .fields import csr_avalon_st_if_source_data_word_0x57ab19ba55cefb0a_cls
+from .fields import csr_avalon_st_if_source_control_valid_0x39f050d4e35f853c_cls
+from .fields import csr_avalon_st_if_source_control_sop_0x726e3a6c39c8b1e4_cls
+from .fields import csr_avalon_st_if_source_control_eop_neg_0x2a97adfa6a22466_cls
+from .fields import csr_avalon_st_if_source_control_empty_0x77a439792a2d9e3c_cls
+from .fields import csr_avalon_st_if_source_status_ready_neg_0x673b15382ba788c1_cls
+from .fields import csr_avalon_st_if_sink_data_word_neg_0x602a87b78144da5f_cls
+from .fields import csr_avalon_st_if_sink_control_ready_0x85d4b5f4ba39ab8_cls
+from .fields import csr_avalon_st_if_sink_status_valid_0x71b9494f81a5212a_cls
+from .fields import csr_avalon_st_if_sink_status_sop_neg_0x177803398f788238_cls
+from .fields import csr_avalon_st_if_sink_status_eop_neg_0x28928507d74dbfd_cls
+from .fields import csr_avalon_st_if_sink_status_empty_neg_0x5950e795dcc2e0a5_cls
+from .fields import csr_test_input_word_neg_0x3ad3d28f7c366987_cls
+from .fields import csr_test_output_word_0x4cf17871913dcdd1_cls
 
 # register definitions
     
     
-class csr_avalon_st_if_source_data_0x3660f5397353c16d_cls(RegReadWrite):
+class csr_avalon_st_if_source_data_neg_0x6d3a98415923896a_cls(RegReadWrite):
     """
     Class to represent a register in the register model
 
@@ -93,7 +95,7 @@ class csr_avalon_st_if_source_data_0x3660f5397353c16d_cls(RegReadWrite):
 
         # build the field attributes
         
-        self.__word:csr_avalon_st_if_source_data_word_neg_0x55074116f9209c24_cls = csr_avalon_st_if_source_data_word_neg_0x55074116f9209c24_cls(
+        self.__word:csr_avalon_st_if_source_data_word_0x57ab19ba55cefb0a_cls = csr_avalon_st_if_source_data_word_0x57ab19ba55cefb0a_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -119,7 +121,7 @@ class csr_avalon_st_if_source_data_0x3660f5397353c16d_cls(RegReadWrite):
     # build the properties for the fields
     
     @property
-    def word(self) -> csr_avalon_st_if_source_data_word_neg_0x55074116f9209c24_cls:
+    def word(self) -> csr_avalon_st_if_source_data_word_0x57ab19ba55cefb0a_cls:
         """
         Property to access word field of the register
 
@@ -151,7 +153,7 @@ class csr_avalon_st_if_source_data_0x3660f5397353c16d_cls(RegReadWrite):
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_avalon_st_if_source_data_word_neg_0x55074116f9209c24_cls':
+    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_avalon_st_if_source_data_word_0x57ab19ba55cefb0a_cls':
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -182,7 +184,7 @@ class csr_avalon_st_if_source_data_0x3660f5397353c16d_cls(RegReadWrite):
 
     
     
-class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
+class csr_avalon_st_if_source_control_0x65accd498ad5f34d_cls(RegReadWrite):
     """
     Class to represent a register in the register model
 
@@ -215,7 +217,7 @@ class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
 
         # build the field attributes
         
-        self.__valid:csr_avalon_st_if_source_control_valid_0x593791e23ae3d4b3_cls = csr_avalon_st_if_source_control_valid_0x593791e23ae3d4b3_cls(
+        self.__valid:csr_avalon_st_if_source_control_valid_0x39f050d4e35f853c_cls = csr_avalon_st_if_source_control_valid_0x39f050d4e35f853c_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=1,
@@ -227,7 +229,7 @@ class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
             logger_handle=logger_handle+'.valid',
             inst_name='valid',
             field_type=int)
-        self.__sop:csr_avalon_st_if_source_control_sop_0x570ed007765679b0_cls = csr_avalon_st_if_source_control_sop_0x570ed007765679b0_cls(
+        self.__sop:csr_avalon_st_if_source_control_sop_0x726e3a6c39c8b1e4_cls = csr_avalon_st_if_source_control_sop_0x726e3a6c39c8b1e4_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=1,
@@ -239,7 +241,7 @@ class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
             logger_handle=logger_handle+'.sop',
             inst_name='sop',
             field_type=int)
-        self.__eop:csr_avalon_st_if_source_control_eop_neg_0x78f9c145ae8fe48e_cls = csr_avalon_st_if_source_control_eop_neg_0x78f9c145ae8fe48e_cls(
+        self.__eop:csr_avalon_st_if_source_control_eop_neg_0x2a97adfa6a22466_cls = csr_avalon_st_if_source_control_eop_neg_0x2a97adfa6a22466_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=1,
@@ -251,7 +253,7 @@ class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
             logger_handle=logger_handle+'.eop',
             inst_name='eop',
             field_type=int)
-        self.__empty:csr_avalon_st_if_source_control_empty_neg_0x582af1ddd8bfcbc6_cls = csr_avalon_st_if_source_control_empty_neg_0x582af1ddd8bfcbc6_cls(
+        self.__empty:csr_avalon_st_if_source_control_empty_0x77a439792a2d9e3c_cls = csr_avalon_st_if_source_control_empty_0x77a439792a2d9e3c_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=2,
@@ -277,7 +279,7 @@ class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
     # build the properties for the fields
     
     @property
-    def valid(self) -> csr_avalon_st_if_source_control_valid_0x593791e23ae3d4b3_cls:
+    def valid(self) -> csr_avalon_st_if_source_control_valid_0x39f050d4e35f853c_cls:
         """
         Property to access valid field of the register
 
@@ -298,7 +300,7 @@ class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
         """
         return self.__valid
     @property
-    def sop(self) -> csr_avalon_st_if_source_control_sop_0x570ed007765679b0_cls:
+    def sop(self) -> csr_avalon_st_if_source_control_sop_0x726e3a6c39c8b1e4_cls:
         """
         Property to access sop field of the register
 
@@ -318,7 +320,7 @@ class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
         """
         return self.__sop
     @property
-    def eop(self) -> csr_avalon_st_if_source_control_eop_neg_0x78f9c145ae8fe48e_cls:
+    def eop(self) -> csr_avalon_st_if_source_control_eop_neg_0x2a97adfa6a22466_cls:
         """
         Property to access eop field of the register
 
@@ -338,7 +340,7 @@ class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
         """
         return self.__eop
     @property
-    def empty(self) -> csr_avalon_st_if_source_control_empty_neg_0x582af1ddd8bfcbc6_cls:
+    def empty(self) -> csr_avalon_st_if_source_control_empty_0x77a439792a2d9e3c_cls:
         """
         Property to access empty field of the register
 
@@ -373,23 +375,23 @@ class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
     # nodes:4
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["valid"]) -> 'csr_avalon_st_if_source_control_valid_0x593791e23ae3d4b3_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["valid"]) -> 'csr_avalon_st_if_source_control_valid_0x39f050d4e35f853c_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["sop"]) -> 'csr_avalon_st_if_source_control_sop_0x570ed007765679b0_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["sop"]) -> 'csr_avalon_st_if_source_control_sop_0x726e3a6c39c8b1e4_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["eop"]) -> 'csr_avalon_st_if_source_control_eop_neg_0x78f9c145ae8fe48e_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["eop"]) -> 'csr_avalon_st_if_source_control_eop_neg_0x2a97adfa6a22466_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["empty"]) -> 'csr_avalon_st_if_source_control_empty_neg_0x582af1ddd8bfcbc6_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["empty"]) -> 'csr_avalon_st_if_source_control_empty_0x77a439792a2d9e3c_cls': ...
                 
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_source_control_valid_0x593791e23ae3d4b3_cls', 'csr_avalon_st_if_source_control_sop_0x570ed007765679b0_cls', 'csr_avalon_st_if_source_control_eop_neg_0x78f9c145ae8fe48e_cls', 'csr_avalon_st_if_source_control_empty_neg_0x582af1ddd8bfcbc6_cls', ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_source_control_valid_0x39f050d4e35f853c_cls', 'csr_avalon_st_if_source_control_sop_0x726e3a6c39c8b1e4_cls', 'csr_avalon_st_if_source_control_eop_neg_0x2a97adfa6a22466_cls', 'csr_avalon_st_if_source_control_empty_0x77a439792a2d9e3c_cls', ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)
@@ -424,7 +426,7 @@ class csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(RegReadWrite):
 
     
     
-class csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls(RegReadOnly):
+class csr_avalon_st_if_source_status_0x1e7df78c8ecf08a7_cls(RegReadOnly):
     """
     Class to represent a register in the register model
 
@@ -457,7 +459,7 @@ class csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls(RegReadOnly):
 
         # build the field attributes
         
-        self.__ready:csr_avalon_st_if_source_status_ready_0x548f35ffaedff6e0_cls = csr_avalon_st_if_source_status_ready_0x548f35ffaedff6e0_cls(
+        self.__ready:csr_avalon_st_if_source_status_ready_neg_0x673b15382ba788c1_cls = csr_avalon_st_if_source_status_ready_neg_0x673b15382ba788c1_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=1,
@@ -483,7 +485,7 @@ class csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls(RegReadOnly):
     # build the properties for the fields
     
     @property
-    def ready(self) -> csr_avalon_st_if_source_status_ready_0x548f35ffaedff6e0_cls:
+    def ready(self) -> csr_avalon_st_if_source_status_ready_neg_0x673b15382ba788c1_cls:
         """
         Property to access ready field of the register
 
@@ -516,7 +518,7 @@ class csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls(RegReadOnly):
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_avalon_st_if_source_status_ready_0x548f35ffaedff6e0_cls':
+    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_avalon_st_if_source_status_ready_neg_0x673b15382ba788c1_cls':
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -547,7 +549,7 @@ class csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls(RegReadOnly):
 
     
     
-class csr_avalon_st_if_sink_data_0x275ca516767c3381_cls(RegReadOnly):
+class csr_avalon_st_if_sink_data_neg_0xb8439acc7179d95_cls(RegReadOnly):
     """
     Class to represent a register in the register model
 
@@ -580,7 +582,7 @@ class csr_avalon_st_if_sink_data_0x275ca516767c3381_cls(RegReadOnly):
 
         # build the field attributes
         
-        self.__word:csr_avalon_st_if_sink_data_word_0xfceb3744e631d53_cls = csr_avalon_st_if_sink_data_word_0xfceb3744e631d53_cls(
+        self.__word:csr_avalon_st_if_sink_data_word_neg_0x602a87b78144da5f_cls = csr_avalon_st_if_sink_data_word_neg_0x602a87b78144da5f_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -606,7 +608,7 @@ class csr_avalon_st_if_sink_data_0x275ca516767c3381_cls(RegReadOnly):
     # build the properties for the fields
     
     @property
-    def word(self) -> csr_avalon_st_if_sink_data_word_0xfceb3744e631d53_cls:
+    def word(self) -> csr_avalon_st_if_sink_data_word_neg_0x602a87b78144da5f_cls:
         """
         Property to access word field of the register
 
@@ -638,7 +640,7 @@ class csr_avalon_st_if_sink_data_0x275ca516767c3381_cls(RegReadOnly):
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_avalon_st_if_sink_data_word_0xfceb3744e631d53_cls':
+    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_avalon_st_if_sink_data_word_neg_0x602a87b78144da5f_cls':
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -669,7 +671,7 @@ class csr_avalon_st_if_sink_data_0x275ca516767c3381_cls(RegReadOnly):
 
     
     
-class csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls(RegReadWrite):
+class csr_avalon_st_if_sink_control_neg_0x4115412b542aff6e_cls(RegReadWrite):
     """
     Class to represent a register in the register model
 
@@ -702,7 +704,7 @@ class csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls(RegReadWrite):
 
         # build the field attributes
         
-        self.__ready:csr_avalon_st_if_sink_control_ready_neg_0x32324d59367c0f61_cls = csr_avalon_st_if_sink_control_ready_neg_0x32324d59367c0f61_cls(
+        self.__ready:csr_avalon_st_if_sink_control_ready_0x85d4b5f4ba39ab8_cls = csr_avalon_st_if_sink_control_ready_0x85d4b5f4ba39ab8_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=1,
@@ -728,7 +730,7 @@ class csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls(RegReadWrite):
     # build the properties for the fields
     
     @property
-    def ready(self) -> csr_avalon_st_if_sink_control_ready_neg_0x32324d59367c0f61_cls:
+    def ready(self) -> csr_avalon_st_if_sink_control_ready_0x85d4b5f4ba39ab8_cls:
         """
         Property to access ready field of the register
 
@@ -762,7 +764,7 @@ class csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls(RegReadWrite):
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_avalon_st_if_sink_control_ready_neg_0x32324d59367c0f61_cls':
+    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_avalon_st_if_sink_control_ready_0x85d4b5f4ba39ab8_cls':
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -793,7 +795,7 @@ class csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls(RegReadWrite):
 
     
     
-class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
+class csr_avalon_st_if_sink_status_neg_0x3a04078d8a65b080_cls(RegReadOnly):
     """
     Class to represent a register in the register model
 
@@ -826,7 +828,7 @@ class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
 
         # build the field attributes
         
-        self.__valid:csr_avalon_st_if_sink_status_valid_0x5356746a877d69f2_cls = csr_avalon_st_if_sink_status_valid_0x5356746a877d69f2_cls(
+        self.__valid:csr_avalon_st_if_sink_status_valid_0x71b9494f81a5212a_cls = csr_avalon_st_if_sink_status_valid_0x71b9494f81a5212a_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=1,
@@ -838,7 +840,7 @@ class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
             logger_handle=logger_handle+'.valid',
             inst_name='valid',
             field_type=int)
-        self.__sop:csr_avalon_st_if_sink_status_sop_0x1b8927812cfb0bda_cls = csr_avalon_st_if_sink_status_sop_0x1b8927812cfb0bda_cls(
+        self.__sop:csr_avalon_st_if_sink_status_sop_neg_0x177803398f788238_cls = csr_avalon_st_if_sink_status_sop_neg_0x177803398f788238_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=1,
@@ -850,7 +852,7 @@ class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
             logger_handle=logger_handle+'.sop',
             inst_name='sop',
             field_type=int)
-        self.__eop:csr_avalon_st_if_sink_status_eop_neg_0x6bcbbed0cc3e1ba5_cls = csr_avalon_st_if_sink_status_eop_neg_0x6bcbbed0cc3e1ba5_cls(
+        self.__eop:csr_avalon_st_if_sink_status_eop_neg_0x28928507d74dbfd_cls = csr_avalon_st_if_sink_status_eop_neg_0x28928507d74dbfd_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=1,
@@ -862,7 +864,7 @@ class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
             logger_handle=logger_handle+'.eop',
             inst_name='eop',
             field_type=int)
-        self.__empty:csr_avalon_st_if_sink_status_empty_0x147033c0cdbbba49_cls = csr_avalon_st_if_sink_status_empty_0x147033c0cdbbba49_cls(
+        self.__empty:csr_avalon_st_if_sink_status_empty_neg_0x5950e795dcc2e0a5_cls = csr_avalon_st_if_sink_status_empty_neg_0x5950e795dcc2e0a5_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=2,
@@ -888,7 +890,7 @@ class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
     # build the properties for the fields
     
     @property
-    def valid(self) -> csr_avalon_st_if_sink_status_valid_0x5356746a877d69f2_cls:
+    def valid(self) -> csr_avalon_st_if_sink_status_valid_0x71b9494f81a5212a_cls:
         """
         Property to access valid field of the register
 
@@ -908,7 +910,7 @@ class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
         """
         return self.__valid
     @property
-    def sop(self) -> csr_avalon_st_if_sink_status_sop_0x1b8927812cfb0bda_cls:
+    def sop(self) -> csr_avalon_st_if_sink_status_sop_neg_0x177803398f788238_cls:
         """
         Property to access sop field of the register
 
@@ -928,7 +930,7 @@ class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
         """
         return self.__sop
     @property
-    def eop(self) -> csr_avalon_st_if_sink_status_eop_neg_0x6bcbbed0cc3e1ba5_cls:
+    def eop(self) -> csr_avalon_st_if_sink_status_eop_neg_0x28928507d74dbfd_cls:
         """
         Property to access eop field of the register
 
@@ -948,7 +950,7 @@ class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
         """
         return self.__eop
     @property
-    def empty(self) -> csr_avalon_st_if_sink_status_empty_0x147033c0cdbbba49_cls:
+    def empty(self) -> csr_avalon_st_if_sink_status_empty_neg_0x5950e795dcc2e0a5_cls:
         """
         Property to access empty field of the register
 
@@ -983,23 +985,23 @@ class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
     # nodes:4
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["valid"]) -> 'csr_avalon_st_if_sink_status_valid_0x5356746a877d69f2_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["valid"]) -> 'csr_avalon_st_if_sink_status_valid_0x71b9494f81a5212a_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["sop"]) -> 'csr_avalon_st_if_sink_status_sop_0x1b8927812cfb0bda_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["sop"]) -> 'csr_avalon_st_if_sink_status_sop_neg_0x177803398f788238_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["eop"]) -> 'csr_avalon_st_if_sink_status_eop_neg_0x6bcbbed0cc3e1ba5_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["eop"]) -> 'csr_avalon_st_if_sink_status_eop_neg_0x28928507d74dbfd_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["empty"]) -> 'csr_avalon_st_if_sink_status_empty_0x147033c0cdbbba49_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["empty"]) -> 'csr_avalon_st_if_sink_status_empty_neg_0x5950e795dcc2e0a5_cls': ...
                 
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_sink_status_valid_0x5356746a877d69f2_cls', 'csr_avalon_st_if_sink_status_sop_0x1b8927812cfb0bda_cls', 'csr_avalon_st_if_sink_status_eop_neg_0x6bcbbed0cc3e1ba5_cls', 'csr_avalon_st_if_sink_status_empty_0x147033c0cdbbba49_cls', ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_sink_status_valid_0x71b9494f81a5212a_cls', 'csr_avalon_st_if_sink_status_sop_neg_0x177803398f788238_cls', 'csr_avalon_st_if_sink_status_eop_neg_0x28928507d74dbfd_cls', 'csr_avalon_st_if_sink_status_empty_neg_0x5950e795dcc2e0a5_cls', ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)
@@ -1028,6 +1030,250 @@ class csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(RegReadOnly):
         yield self.sop
         yield self.eop
         yield self.empty
+        
+        
+    
+
+    
+    
+class csr_test_input_0x39e1a6f11c300fe7_cls(RegReadOnly):
+    """
+    Class to represent a register in the register model
+
+    +--------------+-------------------------------------------------------------------------+
+    | SystemRDL    | Value                                                                   |
+    | Field        |                                                                         |
+    +==============+=========================================================================+
+    | Name         | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      test_input                                                         |
+    +--------------+-------------------------------------------------------------------------+
+    | Description  | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      <p>Test input register for ADASEC-SDN.</p>                         |
+    +--------------+-------------------------------------------------------------------------+
+    """
+
+    __slots__ : list[str] = ['__word']
+
+    def __init__(self,
+                 address: int,
+                 logger_handle: str,
+                 inst_name: str,
+                 parent: Union[AddressMap,RegFile,ReadableMemory]):
+
+        super().__init__(address=address,
+                         logger_handle=logger_handle,
+                         inst_name=inst_name,
+                         parent=parent)
+
+        # build the field attributes
+        
+        self.__word:csr_test_input_word_neg_0x3ad3d28f7c366987_cls = csr_test_input_word_neg_0x3ad3d28f7c366987_cls(
+            parent_register=self,
+            size_props=FieldSizeProps(
+                width=32,
+                lsb=0, msb=31,
+                low=0, high=31),
+            misc_props=FieldMiscProps(
+                default=0,
+                is_volatile=True),
+            logger_handle=logger_handle+'.word',
+            inst_name='word',
+            field_type=int)
+
+    @property
+    def width(self) -> int:
+        return 32
+
+    @property
+    def accesswidth(self) -> int:
+        return 32
+
+    
+
+    # build the properties for the fields
+    
+    @property
+    def word(self) -> csr_test_input_word_neg_0x3ad3d28f7c366987_cls:
+        """
+        Property to access word field of the register
+
+        +--------------+-------------------------------------------------------------------------+
+        | SystemRDL    | Value                                                                   |
+        | Field        |                                                                         |
+        +==============+=========================================================================+
+        | Name         | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      test_input.value[31:0]                                             |
+        +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>32-bit test input value for ADASEC-SDN.</p>                     |
+        +--------------+-------------------------------------------------------------------------+
+        """
+        return self.__word
+
+    
+    @property
+    def systemrdl_python_child_name_map(self) -> dict[str, str]:
+        return {'word':'word',
+            }
+
+    
+    
+    
+    
+    
+    
+                
+    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_test_input_word_neg_0x3ad3d28f7c366987_cls':
+        return super().get_child_by_system_rdl_name(name)
+                
+    
+
+
+    
+
+    
+    
+
+    @property
+    def rdl_name(self) -> str:
+        return "test_input"
+    @property
+    def rdl_desc(self) -> str:
+        return "Test input register for ADASEC-SDN."
+    
+    
+
+    
+    def __iter__(self) -> Iterator[Union[FieldReadOnly,FieldWriteOnly,FieldReadWrite]]:
+        
+        
+        yield self.word
+        
+        
+    
+
+    
+    
+class csr_test_output_neg_0x34731a59caa5f5e_cls(RegReadWrite):
+    """
+    Class to represent a register in the register model
+
+    +--------------+-------------------------------------------------------------------------+
+    | SystemRDL    | Value                                                                   |
+    | Field        |                                                                         |
+    +==============+=========================================================================+
+    | Name         | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      test_output                                                        |
+    +--------------+-------------------------------------------------------------------------+
+    | Description  | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      <p>Test output register for ADASEC-SDN.</p>                        |
+    +--------------+-------------------------------------------------------------------------+
+    """
+
+    __slots__ : list[str] = ['__word']
+
+    def __init__(self,
+                 address: int,
+                 logger_handle: str,
+                 inst_name: str,
+                 parent: Union[AddressMap,RegFile,MemoryReadWrite]):
+
+        super().__init__(address=address,
+                         logger_handle=logger_handle,
+                         inst_name=inst_name,
+                         parent=parent)
+
+        # build the field attributes
+        
+        self.__word:csr_test_output_word_0x4cf17871913dcdd1_cls = csr_test_output_word_0x4cf17871913dcdd1_cls(
+            parent_register=self,
+            size_props=FieldSizeProps(
+                width=32,
+                lsb=0, msb=31,
+                low=0, high=31),
+            misc_props=FieldMiscProps(
+                default=None,
+                is_volatile=False),
+            logger_handle=logger_handle+'.word',
+            inst_name='word',
+            field_type=int)
+
+    @property
+    def width(self) -> int:
+        return 32
+
+    @property
+    def accesswidth(self) -> int:
+        return 32
+
+    
+
+    # build the properties for the fields
+    
+    @property
+    def word(self) -> csr_test_output_word_0x4cf17871913dcdd1_cls:
+        """
+        Property to access word field of the register
+
+        +--------------+-------------------------------------------------------------------------+
+        | SystemRDL    | Value                                                                   |
+        | Field        |                                                                         |
+        +==============+=========================================================================+
+        | Name         | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      test_output.value[31:0]                                            |
+        +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>32-bit test output value for ADASEC-SDN.</p>                    |
+        +--------------+-------------------------------------------------------------------------+
+        """
+        return self.__word
+
+    
+    @property
+    def systemrdl_python_child_name_map(self) -> dict[str, str]:
+        return {'word':'word',
+            }
+
+    
+    
+    
+    
+    
+    
+                
+    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_test_output_word_0x4cf17871913dcdd1_cls':
+        return super().get_child_by_system_rdl_name(name)
+                
+    
+
+
+    
+
+    
+    
+
+    @property
+    def rdl_name(self) -> str:
+        return "test_output"
+    @property
+    def rdl_desc(self) -> str:
+        return "Test output register for ADASEC-SDN."
+    
+    
+
+    
+    def __iter__(self) -> Iterator[Union[FieldReadOnly,FieldWriteOnly,FieldReadWrite]]:
+        
+        
+        yield self.word
         
         
     

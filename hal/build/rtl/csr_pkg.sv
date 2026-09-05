@@ -4,8 +4,8 @@
 package csr_pkg;
 
     localparam CSR_DATA_WIDTH = 32;
-    localparam CSR_MIN_ADDR_WIDTH = 5;
-    localparam CSR_SIZE = 'h1c;
+    localparam CSR_MIN_ADDR_WIDTH = 6;
+    localparam CSR_SIZE = 'h24;
 
     typedef struct {
         logic hwclr;
@@ -79,7 +79,16 @@ package csr_pkg;
     } csr__avalon_st_if__in_t;
 
     typedef struct {
+        logic [31:0] next;
+    } csr__test_input__word__in_t;
+
+    typedef struct {
+        csr__test_input__word__in_t word;
+    } csr__test_input__in_t;
+
+    typedef struct {
         csr__avalon_st_if__in_t avalon_st_if;
+        csr__test_input__in_t test_input;
     } csr__in_t;
 
     typedef struct {
@@ -136,6 +145,15 @@ package csr_pkg;
     } csr__avalon_st_if__out_t;
 
     typedef struct {
+        logic [31:0] value;
+    } csr__test_output__word__out_t;
+
+    typedef struct {
+        csr__test_output__word__out_t word;
+    } csr__test_output__out_t;
+
+    typedef struct {
         csr__avalon_st_if__out_t avalon_st_if;
+        csr__test_output__out_t test_output;
     } csr__out_t;
 endpackage

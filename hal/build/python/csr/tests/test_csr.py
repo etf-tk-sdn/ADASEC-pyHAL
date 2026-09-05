@@ -108,6 +108,16 @@ class csr_single_access(csr_TestCase): # type: ignore[valid-type,misc]
             
             self.assertDictEqual(self.dut.avalon_st_if.sink.status.udp,{})
             
+        with self.subTest(msg='register: csr.test_input'):
+            
+            
+            self.assertDictEqual(self.dut.test_input.udp,{})
+            
+        with self.subTest(msg='register: csr.test_output'):
+            
+            
+            self.assertDictEqual(self.dut.test_output.udp,{})
+            
         with self.subTest(msg='register: csr.avalon_st_if.source.data.word'):
             
             
@@ -167,6 +177,16 @@ class csr_single_access(csr_TestCase): # type: ignore[valid-type,misc]
             
             
             self.assertDictEqual(self.dut.avalon_st_if.sink.status.empty.udp,{})
+            
+        with self.subTest(msg='register: csr.test_input.word'):
+            
+            
+            self.assertDictEqual(self.dut.test_input.word.udp,{})
+            
+        with self.subTest(msg='register: csr.test_output.word'):
+            
+            
+            self.assertDictEqual(self.dut.test_output.word.udp,{})
             
         
 
@@ -232,6 +252,24 @@ class csr_single_access(csr_TestCase): # type: ignore[valid-type,misc]
             self._single_register_read_and_write_test(rut=self.dut.avalon_st_if.sink.status, has_sw_readable=True, has_sw_writable=False,
                                                                                           readable_fields=set(['valid','sop','eop','empty', ]),
                                                                                           writeable_fields=set([ ]) )
+        with self.subTest(msg='register: csr.test_input'):
+            self._single_register_property_test(rut=self.dut.test_input, address=28, width=32, accesswidth=32, size=4,
+                                                rdl_name="test_input",
+                                                rdl_desc="Test input register for ADASEC-SDN.",
+                                                inst_name='test_input',
+                                                parent_full_inst_name='csr')
+            self._single_register_read_and_write_test(rut=self.dut.test_input, has_sw_readable=True, has_sw_writable=False,
+                                                                                          readable_fields=set(['word', ]),
+                                                                                          writeable_fields=set([ ]) )
+        with self.subTest(msg='register: csr.test_output'):
+            self._single_register_property_test(rut=self.dut.test_output, address=32, width=32, accesswidth=32, size=4,
+                                                rdl_name="test_output",
+                                                rdl_desc="Test output register for ADASEC-SDN.",
+                                                inst_name='test_output',
+                                                parent_full_inst_name='csr')
+            self._single_register_read_and_write_test(rut=self.dut.test_output, has_sw_readable=True, has_sw_writable=True,
+                                                                                          readable_fields=set(['word', ]),
+                                                                                          writeable_fields=set(['word', ]) )
         
 
     def test_field(self) -> None:
@@ -323,6 +361,20 @@ class csr_single_access(csr_TestCase): # type: ignore[valid-type,misc]
                                              inst_name='empty',
                                              parent_full_inst_name='csr.avalon_st_if.sink.status')
             self._single_int_field_read_and_write_test(fut=self.dut.avalon_st_if.sink.status.empty, is_sw_readable=True, is_sw_writable=False)
+        with self.subTest(msg='field: csr.test_input.word'):
+            self._single_field_property_test(fut=self.dut.test_input.word, lsb=0, msb=31, low=0, high=31, is_volatile=True, default=0,
+                                             rdl_name="test_input.value[31:0]",
+                                             rdl_desc="32-bit test input value for ADASEC-SDN.",
+                                             inst_name='word',
+                                             parent_full_inst_name='csr.test_input')
+            self._single_int_field_read_and_write_test(fut=self.dut.test_input.word, is_sw_readable=True, is_sw_writable=False)
+        with self.subTest(msg='field: csr.test_output.word'):
+            self._single_field_property_test(fut=self.dut.test_output.word, lsb=0, msb=31, low=0, high=31, is_volatile=False, default=None,
+                                             rdl_name="test_output.value[31:0]",
+                                             rdl_desc="32-bit test output value for ADASEC-SDN.",
+                                             inst_name='word',
+                                             parent_full_inst_name='csr.test_output')
+            self._single_int_field_read_and_write_test(fut=self.dut.test_output.word, is_sw_readable=True, is_sw_writable=True)
 
     def test_addrmap(self) -> None:
         """
@@ -332,14 +384,14 @@ class csr_single_access(csr_TestCase): # type: ignore[valid-type,misc]
         
         with self.subTest(msg='addrmap: top_node'):
             self._single_addrmap_property_test(dut=self.dut,
-                                               size=28,
+                                               size=36,
                                                rdl_name="CSR",
                                                rdl_desc="Control and status registers for ADASEC-SDN.",
                                                inst_name='csr',
                                                parent_full_inst_name=None)
             self._test_addrmap_iterators(dut=self.dut,
-                                         writeable_registers=NodeIterators(),
-                                         readable_registers=NodeIterators(),
+                                         writeable_registers=NodeIterators('test_output',),
+                                         readable_registers=NodeIterators('test_input','test_output',),
                                          sections=NodeIterators('avalon_st_if',),
                                          memories=NodeIterators())
         

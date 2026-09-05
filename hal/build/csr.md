@@ -9,13 +9,15 @@ Don't override. Generated from: csr
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x1C
+- Size: 0x24
 
 <p>Control and status registers for ADASEC-SDN.</p>
 
 |Offset| Identifier |    Name    |
 |------|------------|------------|
-|  0x0 |avalon_st_if|avalon_st_if|
+| 0x00 |avalon_st_if|avalon_st_if|
+| 0x1C | test_input | test_input |
+| 0x20 | test_output| test_output|
 
 ## avalon_st_if register file
 
@@ -183,3 +185,35 @@ Don't override. Generated from: csr
 #### empty field
 
 <p>Indicates the number of empty bytes in the last word of the current frame on the Avalon-ST sink interface.</p>
+
+### test_input register
+
+- Absolute Address: 0x1C
+- Base Offset: 0x1C
+- Size: 0x4
+
+<p>Test input register for ADASEC-SDN.</p>
+
+|Bits|Identifier|Access|Reset|         Name         |
+|----|----------|------|-----|----------------------|
+|31:0|   word   |   r  | 0x0 |test_input.value[31:0]|
+
+#### word field
+
+<p>32-bit test input value for ADASEC-SDN.</p>
+
+### test_output register
+
+- Absolute Address: 0x20
+- Base Offset: 0x20
+- Size: 0x4
+
+<p>Test output register for ADASEC-SDN.</p>
+
+|Bits|Identifier|Access|Reset|          Name         |
+|----|----------|------|-----|-----------------------|
+|31:0|   word   |  rw  |  —  |test_output.value[31:0]|
+
+#### word field
+
+<p>32-bit test output value for ADASEC-SDN.</p>

@@ -153,4 +153,30 @@ addrmap csr {
             } status;
         } sink;
     } avalon_st_if;
+
+    reg test_input {
+        name = "test_input";
+        desc = "Test input register for ADASEC-SDN.";
+
+        field {
+            name = "test_input.value[31:0]";
+            desc = "32-bit test input value for ADASEC-SDN.";
+
+            sw = r;
+            hw = w;
+        } word[31:0] = 0;
+    } test_input;
+
+    reg test_output {
+        name = "test_output";
+        desc = "Test output register for ADASEC-SDN.";
+
+        field {
+            name = "test_output.value[31:0]";
+            desc = "32-bit test output value for ADASEC-SDN.";
+
+            sw = rw;
+            hw = r;
+        } word[31:0];
+    } test_output;
 };

@@ -59,18 +59,20 @@ from ..lib import NormalCallbackSet, NormalCallbackSetLegacy
 
 
 
-from ._registers import csr_avalon_st_if_source_data_0x3660f5397353c16d_cls
-from ._registers import csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls
-from ._registers import csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls
-from ._registers import csr_avalon_st_if_sink_data_0x275ca516767c3381_cls
-from ._registers import csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls
-from ._registers import csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls
+from ._registers import csr_avalon_st_if_source_data_neg_0x6d3a98415923896a_cls
+from ._registers import csr_avalon_st_if_source_control_0x65accd498ad5f34d_cls
+from ._registers import csr_avalon_st_if_source_status_0x1e7df78c8ecf08a7_cls
+from ._registers import csr_avalon_st_if_sink_data_neg_0xb8439acc7179d95_cls
+from ._registers import csr_avalon_st_if_sink_control_neg_0x4115412b542aff6e_cls
+from ._registers import csr_avalon_st_if_sink_status_neg_0x3a04078d8a65b080_cls
+from ._registers import csr_test_input_0x39e1a6f11c300fe7_cls
+from ._registers import csr_test_output_neg_0x34731a59caa5f5e_cls
 
 
 # addrmap, regfile, memor and register definitions
     
     
-class csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls(RegFile):
+class csr_avalon_st_if_sink_neg_0x41d0d564d4f8fc85_cls(RegFile):
     """
     Class to represent a register file in the register model
 
@@ -104,19 +106,19 @@ class csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls(RegFile):
         # instance of objects within the class
         
             
-        self.__data:csr_avalon_st_if_sink_data_0x275ca516767c3381_cls = csr_avalon_st_if_sink_data_0x275ca516767c3381_cls(
+        self.__data:csr_avalon_st_if_sink_data_neg_0xb8439acc7179d95_cls = csr_avalon_st_if_sink_data_neg_0xb8439acc7179d95_cls(
                                                                      address=self.address+0,
                                                                      logger_handle=logger_handle+'.data',
                                                                      inst_name='data', parent=self)
         
             
-        self.__control:csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls = csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls(
+        self.__control:csr_avalon_st_if_sink_control_neg_0x4115412b542aff6e_cls = csr_avalon_st_if_sink_control_neg_0x4115412b542aff6e_cls(
                                                                      address=self.address+4,
                                                                      logger_handle=logger_handle+'.control',
                                                                      inst_name='control', parent=self)
         
             
-        self.__status:csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls = csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls(
+        self.__status:csr_avalon_st_if_sink_status_neg_0x3a04078d8a65b080_cls = csr_avalon_st_if_sink_status_neg_0x3a04078d8a65b080_cls(
                                                                      address=self.address+8,
                                                                      logger_handle=logger_handle+'.status',
                                                                      inst_name='status', parent=self)
@@ -128,7 +130,7 @@ class csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls(RegFile):
 
     # properties for Register and RegisterFiles
     @property
-    def data(self) -> 'csr_avalon_st_if_sink_data_0x275ca516767c3381_cls':
+    def data(self) -> 'csr_avalon_st_if_sink_data_neg_0xb8439acc7179d95_cls':
         """
         Property to access data 
 
@@ -148,7 +150,7 @@ class csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls(RegFile):
         return self.__data
     
     @property
-    def control(self) -> 'csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls':
+    def control(self) -> 'csr_avalon_st_if_sink_control_neg_0x4115412b542aff6e_cls':
         """
         Property to access control 
 
@@ -168,7 +170,7 @@ class csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls(RegFile):
         return self.__control
     
     @property
-    def status(self) -> 'csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls':
+    def status(self) -> 'csr_avalon_st_if_sink_status_neg_0x3a04078d8a65b080_cls':
         """
         Property to access status 
 
@@ -203,19 +205,19 @@ class csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls(RegFile):
     # nodes:3
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["data"]) -> 'csr_avalon_st_if_sink_data_0x275ca516767c3381_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["data"]) -> 'csr_avalon_st_if_sink_data_neg_0xb8439acc7179d95_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["control"]) -> 'csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["control"]) -> 'csr_avalon_st_if_sink_control_neg_0x4115412b542aff6e_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["status"]) -> 'csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["status"]) -> 'csr_avalon_st_if_sink_status_neg_0x3a04078d8a65b080_cls': ...
                 
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_sink_data_0x275ca516767c3381_cls', 'csr_avalon_st_if_sink_control_neg_0x308341273de07a1_cls', 'csr_avalon_st_if_sink_status_0x650eaf5a7ac3db5_cls', ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_sink_data_neg_0xb8439acc7179d95_cls', 'csr_avalon_st_if_sink_control_neg_0x4115412b542aff6e_cls', 'csr_avalon_st_if_sink_status_neg_0x3a04078d8a65b080_cls', ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)
@@ -249,7 +251,7 @@ class csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls(RegFile):
 
     
     
-class csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls(RegFile):
+class csr_avalon_st_if_source_0x2fbdb55987056386_cls(RegFile):
     """
     Class to represent a register file in the register model
 
@@ -283,19 +285,19 @@ class csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls(RegFile):
         # instance of objects within the class
         
             
-        self.__data:csr_avalon_st_if_source_data_0x3660f5397353c16d_cls = csr_avalon_st_if_source_data_0x3660f5397353c16d_cls(
+        self.__data:csr_avalon_st_if_source_data_neg_0x6d3a98415923896a_cls = csr_avalon_st_if_source_data_neg_0x6d3a98415923896a_cls(
                                                                      address=self.address+0,
                                                                      logger_handle=logger_handle+'.data',
                                                                      inst_name='data', parent=self)
         
             
-        self.__control:csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls = csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls(
+        self.__control:csr_avalon_st_if_source_control_0x65accd498ad5f34d_cls = csr_avalon_st_if_source_control_0x65accd498ad5f34d_cls(
                                                                      address=self.address+4,
                                                                      logger_handle=logger_handle+'.control',
                                                                      inst_name='control', parent=self)
         
             
-        self.__status:csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls = csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls(
+        self.__status:csr_avalon_st_if_source_status_0x1e7df78c8ecf08a7_cls = csr_avalon_st_if_source_status_0x1e7df78c8ecf08a7_cls(
                                                                      address=self.address+8,
                                                                      logger_handle=logger_handle+'.status',
                                                                      inst_name='status', parent=self)
@@ -307,7 +309,7 @@ class csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls(RegFile):
 
     # properties for Register and RegisterFiles
     @property
-    def data(self) -> 'csr_avalon_st_if_source_data_0x3660f5397353c16d_cls':
+    def data(self) -> 'csr_avalon_st_if_source_data_neg_0x6d3a98415923896a_cls':
         """
         Property to access data 
 
@@ -327,7 +329,7 @@ class csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls(RegFile):
         return self.__data
     
     @property
-    def control(self) -> 'csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls':
+    def control(self) -> 'csr_avalon_st_if_source_control_0x65accd498ad5f34d_cls':
         """
         Property to access control 
 
@@ -347,7 +349,7 @@ class csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls(RegFile):
         return self.__control
     
     @property
-    def status(self) -> 'csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls':
+    def status(self) -> 'csr_avalon_st_if_source_status_0x1e7df78c8ecf08a7_cls':
         """
         Property to access status 
 
@@ -382,19 +384,19 @@ class csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls(RegFile):
     # nodes:3
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["data"]) -> 'csr_avalon_st_if_source_data_0x3660f5397353c16d_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["data"]) -> 'csr_avalon_st_if_source_data_neg_0x6d3a98415923896a_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["control"]) -> 'csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["control"]) -> 'csr_avalon_st_if_source_control_0x65accd498ad5f34d_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["status"]) -> 'csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["status"]) -> 'csr_avalon_st_if_source_status_0x1e7df78c8ecf08a7_cls': ...
                 
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_source_data_0x3660f5397353c16d_cls', 'csr_avalon_st_if_source_control_neg_0x6e7d3d01fcd4aeff_cls', 'csr_avalon_st_if_source_status_0x2d383fb58e0f1cb1_cls', ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_source_data_neg_0x6d3a98415923896a_cls', 'csr_avalon_st_if_source_control_0x65accd498ad5f34d_cls', 'csr_avalon_st_if_source_status_0x1e7df78c8ecf08a7_cls', ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)
@@ -428,7 +430,7 @@ class csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls(RegFile):
 
     
     
-class csr_avalon_st_if_0x51d4d0f60486d505_cls(RegFile):
+class csr_avalon_st_if_0x146190104d980fe7_cls(RegFile):
     """
     Class to represent a register file in the register model
 
@@ -460,12 +462,12 @@ class csr_avalon_st_if_0x51d4d0f60486d505_cls(RegFile):
                          parent=parent)
 
         # instance of objects within the class
-        self.__source:csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls = csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls(
+        self.__source:csr_avalon_st_if_source_0x2fbdb55987056386_cls = csr_avalon_st_if_source_0x2fbdb55987056386_cls(
                                                                                 address=self.address+0,
                                                                                 logger_handle=logger_handle+'.source',
                                                                                 inst_name='source',
                                                                                 parent=self)
-        self.__sink:csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls = csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls(
+        self.__sink:csr_avalon_st_if_sink_neg_0x41d0d564d4f8fc85_cls = csr_avalon_st_if_sink_neg_0x41d0d564d4f8fc85_cls(
                                                                                 address=self.address+16,
                                                                                 logger_handle=logger_handle+'.sink',
                                                                                 inst_name='sink',
@@ -478,7 +480,7 @@ class csr_avalon_st_if_0x51d4d0f60486d505_cls(RegFile):
 
     # properties for Register and RegisterFiles
     @property
-    def source(self) -> 'csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls':
+    def source(self) -> 'csr_avalon_st_if_source_0x2fbdb55987056386_cls':
         """
         Property to access source 
 
@@ -498,7 +500,7 @@ class csr_avalon_st_if_0x51d4d0f60486d505_cls(RegFile):
         return self.__source
     
     @property
-    def sink(self) -> 'csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls':
+    def sink(self) -> 'csr_avalon_st_if_sink_neg_0x41d0d564d4f8fc85_cls':
         """
         Property to access sink 
 
@@ -533,15 +535,15 @@ class csr_avalon_st_if_0x51d4d0f60486d505_cls(RegFile):
     # nodes:2
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["source"]) -> 'csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["source"]) -> 'csr_avalon_st_if_source_0x2fbdb55987056386_cls': ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["sink"]) -> 'csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls': ...
+    def get_child_by_system_rdl_name(self, name: Literal["sink"]) -> 'csr_avalon_st_if_sink_neg_0x41d0d564d4f8fc85_cls': ...
                 
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_source_neg_0x39e1d1f2b8d7aa81_cls', 'csr_avalon_st_if_sink_0x5de0b379d4d4c213_cls', ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_source_0x2fbdb55987056386_cls', 'csr_avalon_st_if_sink_neg_0x41d0d564d4f8fc85_cls', ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)
@@ -574,7 +576,7 @@ class csr_avalon_st_if_0x51d4d0f60486d505_cls(RegFile):
 
     
     
-class csr_0x68dff0a38687b160_cls(AddressMap):
+class csr_neg_0x5b9c0098762e9493_cls(AddressMap):
     """
     Class to represent a address map in the register model
 
@@ -592,7 +594,7 @@ class csr_0x68dff0a38687b160_cls(AddressMap):
     +--------------+-------------------------------------------------------------------------+
     """
 
-    __slots__ : list[str] = ['__avalon_st_if']
+    __slots__ : list[str] = ['__avalon_st_if', '__test_input', '__test_output']
 
     def __init__(self, *,
                  address:int=0,
@@ -611,18 +613,30 @@ class csr_0x68dff0a38687b160_cls(AddressMap):
                          inst_name=inst_name,
                          parent=parent)
 
-        self.__avalon_st_if:csr_avalon_st_if_0x51d4d0f60486d505_cls = csr_avalon_st_if_0x51d4d0f60486d505_cls(
+        self.__avalon_st_if:csr_avalon_st_if_0x146190104d980fe7_cls = csr_avalon_st_if_0x146190104d980fe7_cls(
                                                                                 address=self.address+0,
                                                                                 logger_handle=logger_handle+'.avalon_st_if',
                                                                                 inst_name='avalon_st_if',
                                                                                 parent=self)
         
+            
+        self.__test_input:csr_test_input_0x39e1a6f11c300fe7_cls = csr_test_input_0x39e1a6f11c300fe7_cls(
+                                                                     address=self.address+28,
+                                                                     logger_handle=logger_handle+'.test_input',
+                                                                     inst_name='test_input', parent=self)
+        
+            
+        self.__test_output:csr_test_output_neg_0x34731a59caa5f5e_cls = csr_test_output_neg_0x34731a59caa5f5e_cls(
+                                                                     address=self.address+32,
+                                                                     logger_handle=logger_handle+'.test_output',
+                                                                     inst_name='test_output', parent=self)
+        
 
     @property
     def size(self) -> int:
-        return 28
+        return 36
     @property
-    def avalon_st_if(self) -> 'csr_avalon_st_if_0x51d4d0f60486d505_cls':
+    def avalon_st_if(self) -> 'csr_avalon_st_if_0x146190104d980fe7_cls':
         """
         Property to access avalon_st_if 
 
@@ -641,11 +655,51 @@ class csr_0x68dff0a38687b160_cls(AddressMap):
         """
         return self.__avalon_st_if
         
+    @property
+    def test_input(self) -> 'csr_test_input_0x39e1a6f11c300fe7_cls':
+        """
+        Property to access test_input 
+
+        +--------------+-------------------------------------------------------------------------+
+        | SystemRDL    | Value                                                                   |
+        | Field        |                                                                         |
+        +==============+=========================================================================+
+        | Name         | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      test_input                                                         |
+        +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>Test input register for ADASEC-SDN.</p>                         |
+        +--------------+-------------------------------------------------------------------------+
+        """
+        return self.__test_input
+        
+    @property
+    def test_output(self) -> 'csr_test_output_neg_0x34731a59caa5f5e_cls':
+        """
+        Property to access test_output 
+
+        +--------------+-------------------------------------------------------------------------+
+        | SystemRDL    | Value                                                                   |
+        | Field        |                                                                         |
+        +==============+=========================================================================+
+        | Name         | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      test_output                                                        |
+        +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>Test output register for ADASEC-SDN.</p>                        |
+        +--------------+-------------------------------------------------------------------------+
+        """
+        return self.__test_output
+        
 
     
     @property
     def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        return {'avalon_st_if':'avalon_st_if',
+        return {'avalon_st_if':'avalon_st_if','test_input':'test_input','test_output':'test_output',
             }
 
     
@@ -654,10 +708,25 @@ class csr_0x68dff0a38687b160_cls(AddressMap):
     
     
     
+    # nodes:3
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> 'csr_avalon_st_if_0x51d4d0f60486d505_cls':
+    @overload
+    def get_child_by_system_rdl_name(self, name: Literal["avalon_st_if"]) -> 'csr_avalon_st_if_0x146190104d980fe7_cls': ...
+                
+                
+    @overload
+    def get_child_by_system_rdl_name(self, name: Literal["test_input"]) -> 'csr_test_input_0x39e1a6f11c300fe7_cls': ...
+                
+                
+    @overload
+    def get_child_by_system_rdl_name(self, name: Literal["test_output"]) -> 'csr_test_output_neg_0x34731a59caa5f5e_cls': ...
+                
+
+    @overload
+    def get_child_by_system_rdl_name(self, name: str) -> Union['csr_avalon_st_if_0x146190104d980fe7_cls', 'csr_test_input_0x39e1a6f11c300fe7_cls', 'csr_test_output_neg_0x34731a59caa5f5e_cls', ]: ...
+
+    def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)
-                
     
 
 
@@ -680,12 +749,14 @@ class csr_0x68dff0a38687b160_cls(AddressMap):
         
         
         yield self.avalon_st_if
+        yield self.test_input
+        yield self.test_output
         
         
     
 
 
-csr_cls = csr_0x68dff0a38687b160_cls
+csr_cls = csr_neg_0x5b9c0098762e9493_cls
 
 if __name__ == '__main__':
     # dummy functions to demonstrate the class

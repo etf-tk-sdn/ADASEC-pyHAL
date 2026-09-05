@@ -49,6 +49,14 @@ class csr_simulator_cls(Simulator):
     Register(width=32, full_inst_name='csr.avalon_st_if.sink.status', readable=True, writable=False,
                                          fields=[FieldDefinition(high=0, low=0, msb=0, lsb=0, inst_name='valid', field_type=FieldType.READONLY),FieldDefinition(high=8, low=8, msb=8, lsb=8, inst_name='sop', field_type=FieldType.READONLY),FieldDefinition(high=16, low=16, msb=16, lsb=16, inst_name='eop', field_type=FieldType.READONLY),FieldDefinition(high=25, low=24, msb=25, lsb=24, inst_name='empty', field_type=FieldType.READONLY),
                                                 ]),
+            28 : 
+    Register(width=32, full_inst_name='csr.test_input', readable=True, writable=False,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='word', field_type=FieldType.READONLY),
+                                                ]),
+            32 : 
+    Register(width=32, full_inst_name='csr.test_output', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='word', field_type=FieldType.READWRITE),
+                                                ]),
         }
 
     def _build_memories(self) -> list[MemoryEntry]:

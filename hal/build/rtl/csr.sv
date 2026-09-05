@@ -8,7 +8,7 @@ module csr (
         input wire avalon_read,
         input wire avalon_write,
         output logic avalon_waitrequest,
-        input wire [2:0] avalon_address,
+        input wire [3:0] avalon_address,
         input wire [31:0] avalon_writedata,
         input wire [3:0] avalon_byteenable,
         output logic avalon_readdatavalid,
@@ -25,7 +25,7 @@ module csr (
     //--------------------------------------------------------------------------
     logic cpuif_req;
     logic cpuif_req_is_wr;
-    logic [4:0] cpuif_addr;
+    logic [5:0] cpuif_addr;
     logic [31:0] cpuif_wr_data;
     logic [31:0] cpuif_wr_biten;
     logic cpuif_req_stall_wr;
@@ -89,10 +89,12 @@ module csr (
                 logic status;
             } sink;
         } avalon_st_if;
+        logic test_input;
+        logic test_output;
     } decoded_reg_strb_t;
     decoded_reg_strb_t decoded_reg_strb;
     logic decoded_err;
-    logic [4:0] decoded_addr;
+    logic [5:0] decoded_addr;
     logic decoded_req;
     logic decoded_req_is_wr;
     logic [31:0] decoded_wr_data;
@@ -103,12 +105,14 @@ module csr (
         automatic logic is_valid_rw;
         is_valid_addr = '1; // No valid address check
         is_valid_rw = '1; // No valid RW check
-        decoded_reg_strb.avalon_st_if.source.data = cpuif_req_masked & (cpuif_addr == 5'h0);
-        decoded_reg_strb.avalon_st_if.source.control = cpuif_req_masked & (cpuif_addr == 5'h4);
-        decoded_reg_strb.avalon_st_if.source.status = cpuif_req_masked & (cpuif_addr == 5'h8) & !cpuif_req_is_wr;
-        decoded_reg_strb.avalon_st_if.sink.data = cpuif_req_masked & (cpuif_addr == 5'h10) & !cpuif_req_is_wr;
-        decoded_reg_strb.avalon_st_if.sink.control = cpuif_req_masked & (cpuif_addr == 5'h14);
-        decoded_reg_strb.avalon_st_if.sink.status = cpuif_req_masked & (cpuif_addr == 5'h18) & !cpuif_req_is_wr;
+        decoded_reg_strb.avalon_st_if.source.data = cpuif_req_masked & (cpuif_addr == 6'h0);
+        decoded_reg_strb.avalon_st_if.source.control = cpuif_req_masked & (cpuif_addr == 6'h4);
+        decoded_reg_strb.avalon_st_if.source.status = cpuif_req_masked & (cpuif_addr == 6'h8) & !cpuif_req_is_wr;
+        decoded_reg_strb.avalon_st_if.sink.data = cpuif_req_masked & (cpuif_addr == 6'h10) & !cpuif_req_is_wr;
+        decoded_reg_strb.avalon_st_if.sink.control = cpuif_req_masked & (cpuif_addr == 6'h14);
+        decoded_reg_strb.avalon_st_if.sink.status = cpuif_req_masked & (cpuif_addr == 6'h18) & !cpuif_req_is_wr;
+        decoded_reg_strb.test_input = cpuif_req_masked & (cpuif_addr == 6'h1c) & !cpuif_req_is_wr;
+        decoded_reg_strb.test_output = cpuif_req_masked & (cpuif_addr == 6'h20);
         decoded_err = '0;
     end
 
@@ -159,6 +163,12 @@ module csr (
                 } control;
             } sink;
         } avalon_st_if;
+        struct {
+            struct {
+                logic [31:0] next;
+                logic load_next;
+            } word;
+        } test_output;
     } field_combo_t;
     field_combo_t field_combo;
 
@@ -193,6 +203,11 @@ module csr (
                 } control;
             } sink;
         } avalon_st_if;
+        struct {
+            struct {
+                logic [31:0] value;
+            } word;
+        } test_output;
     } field_storage_t;
     field_storage_t field_storage;
 
@@ -340,6 +355,25 @@ module csr (
         end
     end
     assign hwif_out.avalon_st_if.sink.control.ready.value = field_storage.avalon_st_if.sink.control.ready.value;
+    // Field: csr.test_output.word
+    always_comb begin
+        automatic logic [31:0] next_c;
+        automatic logic load_next_c;
+        next_c = field_storage.test_output.word.value;
+        load_next_c = '0;
+        if(decoded_reg_strb.test_output && decoded_req_is_wr) begin // SW write
+            next_c = (field_storage.test_output.word.value & ~decoded_wr_biten[31:0]) | (decoded_wr_data[31:0] & decoded_wr_biten[31:0]);
+            load_next_c = '1;
+        end
+        field_combo.test_output.word.next = next_c;
+        field_combo.test_output.word.load_next = load_next_c;
+    end
+    always_ff @(posedge clk) begin
+        if(field_combo.test_output.word.load_next) begin
+            field_storage.test_output.word.value <= field_combo.test_output.word.next;
+        end
+    end
+    assign hwif_out.test_output.word.value = field_storage.test_output.word.value;
 
     //--------------------------------------------------------------------------
     // Write response
@@ -352,7 +386,7 @@ module csr (
     // Readback
     //--------------------------------------------------------------------------
 
-    logic [4:0] rd_mux_addr;
+    logic [5:0] rd_mux_addr;
     assign rd_mux_addr = decoded_addr;
 
     logic readback_err;
@@ -361,29 +395,35 @@ module csr (
     always_comb begin
         automatic logic [31:0] readback_data_var;
         readback_data_var = '0;
-        if(rd_mux_addr == 5'h0) begin
+        if(rd_mux_addr == 6'h0) begin
             readback_data_var[31:0] = field_storage.avalon_st_if.source.data.word.value;
         end
-        if(rd_mux_addr == 5'h4) begin
+        if(rd_mux_addr == 6'h4) begin
             readback_data_var[0] = field_storage.avalon_st_if.source.control.valid.value;
             readback_data_var[8] = field_storage.avalon_st_if.source.control.sop.value;
             readback_data_var[16] = field_storage.avalon_st_if.source.control.eop.value;
             readback_data_var[25:24] = field_storage.avalon_st_if.source.control.empty.value;
         end
-        if(rd_mux_addr == 5'h8) begin
+        if(rd_mux_addr == 6'h8) begin
             readback_data_var[0] = hwif_in.avalon_st_if.source.status.ready.next;
         end
-        if(rd_mux_addr == 5'h10) begin
+        if(rd_mux_addr == 6'h10) begin
             readback_data_var[31:0] = hwif_in.avalon_st_if.sink.data.word.next;
         end
-        if(rd_mux_addr == 5'h14) begin
+        if(rd_mux_addr == 6'h14) begin
             readback_data_var[0] = field_storage.avalon_st_if.sink.control.ready.value;
         end
-        if(rd_mux_addr == 5'h18) begin
+        if(rd_mux_addr == 6'h18) begin
             readback_data_var[0] = hwif_in.avalon_st_if.sink.status.valid.next;
             readback_data_var[8] = hwif_in.avalon_st_if.sink.status.sop.next;
             readback_data_var[16] = hwif_in.avalon_st_if.sink.status.eop.next;
             readback_data_var[25:24] = hwif_in.avalon_st_if.sink.status.empty.next;
+        end
+        if(rd_mux_addr == 6'h1c) begin
+            readback_data_var[31:0] = hwif_in.test_input.word.next;
+        end
+        if(rd_mux_addr == 6'h20) begin
+            readback_data_var[31:0] = field_storage.test_output.word.value;
         end
         readback_data = readback_data_var;
         readback_done = decoded_req & ~decoded_req_is_wr;
