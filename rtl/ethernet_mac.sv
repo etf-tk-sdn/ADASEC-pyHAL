@@ -1,115 +1,119 @@
 // SPDX-FileCopyrightText: 2026 Enio Kaljic
 // SPDX-License-Identifier: CERN-OHL-S-2.0
 
+`resetall
+`timescale 1ns / 1ps
+`default_nettype none
+
 module ethernet_mac #(
     parameter logic [47:0] MAC_ADDRESS = 48'h020000000001,
     parameter logic [4:0] PHY_ADDRESS = 5'b10000,
     parameter int unsigned RX_ASYNC_FIFO_DEPTH = 2048,
-    parameter int unsigned TX_ASYNC_FIFO_DEPTH = 16384
+    parameter int unsigned TX_ASYNC_FIFO_DEPTH = 16384,
+
+    // Derived interface widths; do not override independently.
+    parameter int unsigned RX_FIFO_PTR_W = $clog2(RX_ASYNC_FIFO_DEPTH) + 1,
+    parameter int unsigned TX_FIFO_PTR_W = $clog2(TX_ASYNC_FIFO_DEPTH) + 1
 ) (
     // Shared control and external Avalon-ST clock domain.
-    input logic clk,
-    input logic rst,
-    input logic clk_125,
-    input logic clk_25,
-    input logic clk_2p5,
+    input  wire logic       clk,
+    input  wire logic       rst,
+    input  wire logic       clk_125,
+    input  wire logic       clk_25,
+    input  wire logic       clk_2p5,
 
     // Avalon-ST sink: frame to be transmitted over Ethernet.
-    input  logic [7:0] asi_data,
-    input  logic       asi_valid,
-    input  logic       asi_sop,
-    input  logic       asi_eop,
-    output wire        asi_ready,
-    input  logic [0:0] asi_channel,
-    input  logic [0:0] asi_empty,
+    input  wire logic [7:0] asi_data,
+    input  wire logic       asi_valid,
+    input  wire logic       asi_sop,
+    input  wire logic       asi_eop,
+    output wire logic       asi_ready,
+    input  wire logic [0:0] asi_channel,
+    input  wire logic [0:0] asi_empty,
 
     // Avalon-ST source: frame received from Ethernet.
-    output wire [7:0] aso_data,
-    output wire       aso_valid,
-    output wire       aso_sop,
-    output wire       aso_eop,
-    input  logic      aso_ready,
-    output wire [0:0] aso_channel,
-    output wire [0:0] aso_empty,
+    output wire logic [7:0] aso_data,
+    output wire logic       aso_valid,
+    output wire logic       aso_sop,
+    output wire logic       aso_eop,
+    input  wire logic       aso_ready,
+    output wire logic [0:0] aso_channel,
+    output wire logic [0:0] aso_empty,
 
     // RGMII and PHY control signals.
-    input  logic       rgmii_rx_clk,
-    input  logic [3:0] rgmii_rx_data,
-    input  logic       rgmii_rx_control,
-    output wire        rgmii_tx_clk,
-    output wire [3:0]  rgmii_tx_data,
-    output wire        rgmii_tx_control,
-    output wire        phy_mdc,
-    inout  wire        phy_mdio,
-    input  logic       phy_int_n,
-    output wire        phy_reset_n,
+    input  wire logic       rgmii_rx_clk,
+    input  wire logic [3:0] rgmii_rx_data,
+    input  wire logic       rgmii_rx_control,
+    output wire logic       rgmii_tx_clk,
+    output wire logic [3:0] rgmii_tx_data,
+    output wire logic       rgmii_tx_control,
+    output wire logic       phy_mdc,
+    inout  wire logic       phy_mdio,
+    input  wire logic       phy_int_n,
+    output wire logic       phy_reset_n,
 
     // Status and sticky diagnostics.
-    output wire status_init_done,
-    output wire status_init_error,
-    output wire status_eth_mode,
-    output wire status_ena_10,
-    output wire status_tx_clock,
-    output wire status_tx_clock_toggle,
-    output wire status_rx_activity,
-    output wire status_tx_activity,
-    output wire [4:0] status_rx_error,
-    output wire status_rx_error_seen,
-    output wire status_rx_overflow,
-    output wire status_tx_overflow,
-    output wire [avalon_st_fifo_pkg::clog2(RX_ASYNC_FIFO_DEPTH):0]
-        status_rx_fifo_depth,
-    output wire [avalon_st_fifo_pkg::clog2(TX_ASYNC_FIFO_DEPTH):0]
-        status_tx_fifo_depth,
-    output wire [4:0] status_pkt_class_data,
-    output wire status_pkt_class_valid
+    output wire logic status_init_done,
+    output wire logic status_init_error,
+    output wire logic status_eth_mode,
+    output wire logic status_ena_10,
+    output wire logic status_tx_clock,
+    output wire logic status_tx_clock_toggle,
+    output wire logic status_rx_activity,
+    output wire logic status_tx_activity,
+    output wire logic [4:0] status_rx_error,
+    output wire logic status_rx_error_seen,
+    output wire logic status_rx_overflow,
+    output wire logic status_tx_overflow,
+    output wire logic [RX_FIFO_PTR_W-1:0] status_rx_fifo_depth,
+    output wire logic [TX_FIFO_PTR_W-1:0] status_tx_fifo_depth,
+    output wire logic [4:0] status_pkt_class_data,
+    output wire logic status_pkt_class_valid
 );
-    import avalon_st_fifo_pkg::*;
+    logic [7:0] reg_addr;
+    logic [31:0] reg_data_in;
+    logic [31:0] reg_data_out;
+    logic reg_rd;
+    logic reg_wr;
+    logic reg_busy;
 
-    wire [7:0] reg_addr;
-    wire [31:0] reg_data_in;
-    wire [31:0] reg_data_out;
-    wire reg_rd;
-    wire reg_wr;
-    wire reg_busy;
+    logic eth_mode;
+    logic ena_10;
 
-    wire eth_mode;
-    wire ena_10;
+    logic [2:0] tx_clock_candidates;
+    logic [1:0] tx_clock_select;
+    (* keep = 1 *) logic tx_clock_selected;
+    logic [0:0] rgmii_tx_clock_ddio;
 
-    wire [2:0] tx_clock_candidates;
-    wire [1:0] tx_clock_select;
-    (* keep = 1 *) wire tx_clock_selected;
-    wire [0:0] rgmii_tx_clock_ddio;
+    logic mac_rx_stream_clk;
+    logic mac_tx_stream_clk;
 
-    wire mac_rx_stream_clk;
-    wire mac_tx_stream_clk;
+    logic [7:0] mac_rx_data;
+    logic mac_rx_eop;
+    logic [4:0] mac_rx_error;
+    logic mac_rx_ready;
+    logic mac_rx_sop;
+    logic mac_rx_valid;
 
-    wire [7:0] mac_rx_data;
-    wire mac_rx_eop;
-    wire [4:0] mac_rx_error;
-    wire mac_rx_ready;
-    wire mac_rx_sop;
-    wire mac_rx_valid;
+    logic [7:0] mac_tx_data;
+    logic mac_tx_eop;
+    logic mac_tx_ready;
+    logic mac_tx_sop;
+    logic mac_tx_valid;
 
-    wire [7:0] mac_tx_data;
-    wire mac_tx_eop;
-    wire mac_tx_ready;
-    wire mac_tx_sop;
-    wire mac_tx_valid;
+    logic mdio_in;
+    logic mdio_out;
+    logic mdio_oen;
 
-    wire mdio_in;
-    wire mdio_out;
-    wire mdio_oen;
-
-    wire [clog2(RX_ASYNC_FIFO_DEPTH):0] rx_fifo_depth;
-    wire [clog2(TX_ASYNC_FIFO_DEPTH):0] tx_fifo_depth;
-    wire rx_fifo_almost_full;
-    wire rx_fifo_full;
-    wire tx_fifo_almost_full;
-    wire tx_fifo_full;
-    wire rx_fifo_overflow;
-    wire tx_fifo_overflow;
-    wire [1:0] rx_afull_data;
+    logic [RX_FIFO_PTR_W-1:0] rx_fifo_depth;
+    logic [TX_FIFO_PTR_W-1:0] tx_fifo_depth;
+    logic rx_fifo_almost_full;
+    logic rx_fifo_full;
+    logic tx_fifo_almost_full;
+    logic tx_fifo_full;
+    logic rx_fifo_overflow;
+    logic tx_fifo_overflow;
+    logic [1:0] rx_afull_data;
 
     logic rx_activity_seen = 1'b0;
     logic tx_activity_seen = 1'b0;
@@ -121,7 +125,14 @@ module ethernet_mac #(
     // Asynchronous assertion and synchronous deassertion for RX diagnostics.
     (* altera_attribute = "-name SYNCHRONIZER_IDENTIFICATION FORCED; -name PRESERVE_REGISTER ON" *)
     logic [2:0] rx_diag_reset_pipe = '1;
-    wire rx_diag_reset;
+    logic rx_diag_reset;
+
+    initial begin : parameter_validation
+        if (RX_FIFO_PTR_W != ($clog2(RX_ASYNC_FIFO_DEPTH) + 1))
+            $fatal(1, "ethernet_mac: RX_FIFO_PTR_W must retain its derived value");
+        if (TX_FIFO_PTR_W != ($clog2(TX_ASYNC_FIFO_DEPTH) + 1))
+            $fatal(1, "ethernet_mac: TX_FIFO_PTR_W must retain its derived value");
+    end
 
     assign phy_reset_n = ~rst;
     assign mdio_in = phy_mdio;
@@ -216,7 +227,10 @@ module ethernet_mac #(
         .DROP_OVERSIZE_FRAME(1'b1),
         .DROP_WHEN_FULL(1'b1),
         .ALMOST_FULL_THRESHOLD(
-            RX_ASYNC_FIFO_DEPTH - max_natural(1, RX_ASYNC_FIFO_DEPTH / 8)
+            RX_ASYNC_FIFO_DEPTH - (
+                (RX_ASYNC_FIFO_DEPTH / 8 > 1) ?
+                    RX_ASYNC_FIFO_DEPTH / 8 : 1
+            )
         )
     ) rx_cdc_fifo (
         .asi_clk(mac_rx_stream_clk),
@@ -253,7 +267,10 @@ module ethernet_mac #(
         .DROP_OVERSIZE_FRAME(1'b1),
         .DROP_WHEN_FULL(1'b0),
         .ALMOST_FULL_THRESHOLD(
-            TX_ASYNC_FIFO_DEPTH - max_natural(1, TX_ASYNC_FIFO_DEPTH / 8)
+            TX_ASYNC_FIFO_DEPTH - (
+                (TX_ASYNC_FIFO_DEPTH / 8 > 1) ?
+                    TX_ASYNC_FIFO_DEPTH / 8 : 1
+            )
         )
     ) tx_cdc_fifo (
         .asi_clk(clk),
@@ -373,3 +390,5 @@ module ethernet_mac #(
             tx_clock_counter <= tx_clock_counter + 1'b1;
     end
 endmodule
+
+`resetall

@@ -1,37 +1,14 @@
 // SPDX-FileCopyrightText: 2026 Enio Kaljic
 // SPDX-License-Identifier: CERN-OHL-S-2.0
 
-package avalon_st_fifo_pkg;
-    function automatic integer unsigned clog2(input integer unsigned n);
-        integer unsigned value;
-        integer unsigned result;
-        begin
-            if (n <= 1) begin
-                return 0;
-            end
-
-            value = n - 1;
-            result = 0;
-            while (value > 0) begin
-                value = value / 2;
-                result = result + 1;
-            end
-            return result;
-        end
-    endfunction
-
-    function automatic integer unsigned max_natural(
-        input integer unsigned a,
-        input integer unsigned b
-    );
-        return (a > b) ? a : b;
-    endfunction
-endpackage
+`resetall
+`timescale 1ns / 1ps
+`default_nettype none
 
 module avalon_st_fifo #(
     // FIFO depth expressed in Avalon-ST beats. The internal memory depth is
     // rounded up to the next power of two.
-    parameter int unsigned DEPTH = 4096,
+    parameter int unsigned DEPTH = 2048,
 
     // DATA_W must be a multiple of eight.
     parameter int unsigned DATA_W = 8,
@@ -41,56 +18,54 @@ module avalon_st_fifo #(
 
     parameter bit FRAME_FIFO = 1'b0,
     parameter bit DROP_OVERSIZE_FRAME = 1'b0,
-    parameter bit DROP_WHEN_FULL = 1'b0
+    parameter bit DROP_WHEN_FULL = 1'b0,
+
+    // Derived interface widths; do not override independently.
+    parameter int unsigned PTR_W = $clog2(DEPTH) + 1,
+    parameter int unsigned EMPTY_W = (DATA_W > 8) ?
+        $clog2(DATA_W / 8) : 1,
+    parameter int unsigned CHANNEL_PORT_W =
+        (CHANNEL_W > 0) ? CHANNEL_W : 1
 ) (
-    input  logic clk,
-    input  logic rst,
+    input  wire logic                        clk,
+    input  wire logic                        rst,
 
-    input  logic [DATA_W-1:0] asi_data,
-    input  logic              asi_valid,
-    output logic              asi_ready,
-    input  logic              asi_startofpacket,
-    input  logic              asi_endofpacket,
-    input  logic [avalon_st_fifo_pkg::max_natural(
-                      1, avalon_st_fifo_pkg::clog2(DATA_W / 8))-1:0] asi_empty,
-    input  logic [avalon_st_fifo_pkg::max_natural(1, CHANNEL_W)-1:0] asi_channel,
+    input  wire logic [DATA_W-1:0]           asi_data,
+    input  wire logic                        asi_valid,
+    output wire logic                        asi_ready,
+    input  wire logic                        asi_startofpacket,
+    input  wire logic                        asi_endofpacket,
+    input  wire logic [EMPTY_W-1:0]          asi_empty,
+    input  wire logic [CHANNEL_PORT_W-1:0]   asi_channel,
 
-    output logic [DATA_W-1:0] aso_data,
-    output logic              aso_valid,
-    input  logic              aso_ready,
-    output logic              aso_startofpacket,
-    output logic              aso_endofpacket,
-    output logic [avalon_st_fifo_pkg::max_natural(
-                      1, avalon_st_fifo_pkg::clog2(DATA_W / 8))-1:0] aso_empty,
-    output logic [avalon_st_fifo_pkg::max_natural(1, CHANNEL_W)-1:0] aso_channel,
+    output wire logic [DATA_W-1:0]           aso_data,
+    output wire logic                        aso_valid,
+    input  wire logic                        aso_ready,
+    output wire logic                        aso_startofpacket,
+    output wire logic                        aso_endofpacket,
+    output wire logic [EMPTY_W-1:0]          aso_empty,
+    output wire logic [CHANNEL_PORT_W-1:0]   aso_channel,
 
-    output logic [avalon_st_fifo_pkg::clog2(DEPTH):0] status_depth,
-    output logic status_overflow
+    output wire logic [PTR_W-1:0]            status_depth,
+    output wire logic                        status_overflow
 );
-    import avalon_st_fifo_pkg::*;
-
-    localparam int unsigned ADDR_W = clog2(DEPTH);
-    localparam int unsigned PTR_W = ADDR_W + 1;
+    localparam int unsigned ADDR_W = $clog2(DEPTH);
     localparam int unsigned MEM_DEPTH = 2**ADDR_W;
-
-    localparam int unsigned BYTE_COUNT = DATA_W / 8;
-    localparam int unsigned EMPTY_W = clog2(BYTE_COUNT);
-    localparam int unsigned EMPTY_PORT_W = max_natural(1, EMPTY_W);
-    localparam int unsigned CHANNEL_PORT_W = max_natural(1, CHANNEL_W);
+    localparam int unsigned EMPTY_FIELD_W = $clog2(DATA_W / 8);
 
     // FIFO word layout: [ channel ][ empty ][ EOP ][ SOP ][ data ].
     localparam int unsigned DATA_OFFSET = 0;
     localparam int unsigned SOP_OFFSET = DATA_OFFSET + DATA_W;
     localparam int unsigned EOP_OFFSET = SOP_OFFSET + 1;
     localparam int unsigned EMPTY_OFFSET = EOP_OFFSET + 1;
-    localparam int unsigned CHANNEL_OFFSET = EMPTY_OFFSET + EMPTY_W;
+    localparam int unsigned CHANNEL_OFFSET = EMPTY_OFFSET + EMPTY_FIELD_W;
     localparam int unsigned WORD_W = CHANNEL_OFFSET + CHANNEL_W;
 
     function automatic logic [WORD_W-1:0] pack_word(
         input logic [DATA_W-1:0] data,
         input logic startofpacket,
         input logic endofpacket,
-        input logic [EMPTY_PORT_W-1:0] empty,
+        input logic [EMPTY_W-1:0] empty,
         input logic [CHANNEL_PORT_W-1:0] channel
     );
         logic [WORD_W-1:0] result;
@@ -100,7 +75,7 @@ module avalon_st_fifo #(
             result[SOP_OFFSET] = startofpacket;
             result[EOP_OFFSET] = endofpacket;
 
-            for (int unsigned i = 0; i < EMPTY_W; i++) begin
+            for (int unsigned i = 0; i < EMPTY_FIELD_W; i++) begin
                 result[EMPTY_OFFSET + i] = empty[i];
             end
             for (int unsigned i = 0; i < CHANNEL_W; i++) begin
@@ -110,13 +85,13 @@ module avalon_st_fifo #(
         end
     endfunction
 
-    function automatic logic [EMPTY_PORT_W-1:0] unpack_empty(
+    function automatic logic [EMPTY_W-1:0] unpack_empty(
         input logic [WORD_W-1:0] word
     );
-        logic [EMPTY_PORT_W-1:0] result;
+        logic [EMPTY_W-1:0] result;
         begin
             result = '0;
-            for (int unsigned i = 0; i < EMPTY_W; i++) begin
+            for (int unsigned i = 0; i < EMPTY_FIELD_W; i++) begin
                 result[i] = word[EMPTY_OFFSET + i];
             end
             return result;
@@ -173,6 +148,12 @@ module avalon_st_fifo #(
             $fatal(1, "avalon_st_fifo: DATA_W must be at least 8");
         if ((DATA_W % 8) != 0)
             $fatal(1, "avalon_st_fifo: DATA_W must be a multiple of 8");
+        if (PTR_W != (ADDR_W + 1))
+            $fatal(1, "avalon_st_fifo: PTR_W must retain its derived value");
+        if (EMPTY_W != ((DATA_W > 8) ? EMPTY_FIELD_W : 1))
+            $fatal(1, "avalon_st_fifo: EMPTY_W must retain its derived value");
+        if (CHANNEL_PORT_W != ((CHANNEL_W > 0) ? CHANNEL_W : 1))
+            $fatal(1, "avalon_st_fifo: CHANNEL_PORT_W must retain its derived value");
         if (DROP_OVERSIZE_FRAME && !FRAME_FIFO)
             $fatal(1, "avalon_st_fifo: DROP_OVERSIZE_FRAME requires FRAME_FIFO");
         if (DROP_WHEN_FULL && !(FRAME_FIFO && DROP_OVERSIZE_FRAME))
@@ -291,3 +272,5 @@ module avalon_st_fifo #(
     assign status_depth = depth_reg;
     assign status_overflow = overflow_reg;
 endmodule
+
+`resetall

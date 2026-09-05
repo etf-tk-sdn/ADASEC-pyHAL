@@ -1,7 +1,9 @@
 // SPDX-FileCopyrightText: 2026 Enio Kaljic
 // SPDX-License-Identifier: CERN-OHL-S-2.0
 
-`timescale 1ns/1ps
+`resetall
+`timescale 1ns / 1ps
+`default_nettype none
 
 module ethernet_mac_init_tb;
     localparam time CLK_PERIOD = 8ns;
@@ -9,13 +11,13 @@ module ethernet_mac_init_tb;
     logic clk = 1'b0;
     logic reset = 1'b1;
     logic phy_int_n = 1'b1;
-    wire [7:0] reg_addr;
-    wire [31:0] reg_data_in;
+    logic [7:0] reg_addr;
+    logic [31:0] reg_data_in;
     logic [31:0] reg_data_out;
-    wire reg_rd;
-    wire reg_wr;
-    wire done;
-    wire error;
+    logic reg_rd;
+    logic reg_wr;
+    logic done;
+    logic error;
 
     logic [15:0] phy_extended = 16'h0c60;
     logic [15:0] phy_basic = 16'h1140;
@@ -142,3 +144,5 @@ module ethernet_mac_init_tb;
         $finish;
     end
 endmodule
+
+`resetall

@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Enio Kaljic
 // SPDX-License-Identifier: CERN-OHL-S-2.0
 
+`resetall
+`timescale 1ns / 1ps
+`default_nettype none
+
 // Dual-clock Avalon-ST FIFO. Pointers cross the CDC boundary in Gray code,
 // while the frame-commit pointer uses a stable snapshot and toggle/ack
 // handshake so that incomplete frames never reach the source interface.
@@ -11,61 +15,59 @@ module avalon_st_async_fifo #(
     parameter bit FRAME_FIFO = 1'b0,
     parameter bit DROP_OVERSIZE_FRAME = 1'b0,
     parameter bit DROP_WHEN_FULL = 1'b0,
-    parameter int unsigned ALMOST_FULL_THRESHOLD = 1792
+    parameter int unsigned ALMOST_FULL_THRESHOLD = 1792,
+
+    // Derived interface widths; do not override independently.
+    parameter int unsigned PTR_W = $clog2(DEPTH) + 1,
+    parameter int unsigned EMPTY_W = (DATA_W > 8) ?
+        $clog2(DATA_W / 8) : 1,
+    parameter int unsigned CHANNEL_PORT_W =
+        (CHANNEL_W > 0) ? CHANNEL_W : 1
 ) (
-    input  logic asi_clk,
-    input  logic asi_rst,
-    input  logic aso_clk,
-    input  logic aso_rst,
+    input  wire logic                        asi_clk,
+    input  wire logic                        asi_rst,
+    input  wire logic                        aso_clk,
+    input  wire logic                        aso_rst,
 
-    input  logic [DATA_W-1:0] asi_data,
-    input  logic              asi_valid,
-    output logic              asi_ready,
-    input  logic              asi_startofpacket,
-    input  logic              asi_endofpacket,
-    input  logic [avalon_st_fifo_pkg::max_natural(
-                      1, avalon_st_fifo_pkg::clog2(DATA_W / 8))-1:0] asi_empty,
-    input  logic [avalon_st_fifo_pkg::max_natural(1, CHANNEL_W)-1:0] asi_channel,
+    input  wire logic [DATA_W-1:0]           asi_data,
+    input  wire logic                        asi_valid,
+    output wire logic                        asi_ready,
+    input  wire logic                        asi_startofpacket,
+    input  wire logic                        asi_endofpacket,
+    input  wire logic [EMPTY_W-1:0]          asi_empty,
+    input  wire logic [CHANNEL_PORT_W-1:0]   asi_channel,
 
-    output logic [DATA_W-1:0] aso_data,
-    output logic              aso_valid,
-    input  logic              aso_ready,
-    output logic              aso_startofpacket,
-    output logic              aso_endofpacket,
-    output logic [avalon_st_fifo_pkg::max_natural(
-                      1, avalon_st_fifo_pkg::clog2(DATA_W / 8))-1:0] aso_empty,
-    output logic [avalon_st_fifo_pkg::max_natural(1, CHANNEL_W)-1:0] aso_channel,
+    output wire logic [DATA_W-1:0]           aso_data,
+    output wire logic                        aso_valid,
+    input  wire logic                        aso_ready,
+    output wire logic                        aso_startofpacket,
+    output wire logic                        aso_endofpacket,
+    output wire logic [EMPTY_W-1:0]          aso_empty,
+    output wire logic [CHANNEL_PORT_W-1:0]   aso_channel,
 
     // All status outputs are synchronous to asi_clk.
-    output logic [avalon_st_fifo_pkg::clog2(DEPTH):0] status_depth,
-    output logic status_almost_full,
-    output logic status_full,
-    output logic status_overflow
+    output wire logic [PTR_W-1:0]            status_depth,
+    output wire logic                        status_almost_full,
+    output wire logic                        status_full,
+    output wire logic                        status_overflow
 );
-    import avalon_st_fifo_pkg::*;
-
-    localparam int unsigned ADDR_W = clog2(DEPTH);
-    localparam int unsigned PTR_W = ADDR_W + 1;
+    localparam int unsigned ADDR_W = $clog2(DEPTH);
     localparam int unsigned MEM_DEPTH = 2**ADDR_W;
-
-    localparam int unsigned BYTE_COUNT = DATA_W / 8;
-    localparam int unsigned EMPTY_W = clog2(BYTE_COUNT);
-    localparam int unsigned EMPTY_PORT_W = max_natural(1, EMPTY_W);
-    localparam int unsigned CHANNEL_PORT_W = max_natural(1, CHANNEL_W);
+    localparam int unsigned EMPTY_FIELD_W = $clog2(DATA_W / 8);
 
     // FIFO word layout: [ channel ][ empty ][ EOP ][ SOP ][ data ].
     localparam int unsigned DATA_OFFSET = 0;
     localparam int unsigned SOP_OFFSET = DATA_OFFSET + DATA_W;
     localparam int unsigned EOP_OFFSET = SOP_OFFSET + 1;
     localparam int unsigned EMPTY_OFFSET = EOP_OFFSET + 1;
-    localparam int unsigned CHANNEL_OFFSET = EMPTY_OFFSET + EMPTY_W;
+    localparam int unsigned CHANNEL_OFFSET = EMPTY_OFFSET + EMPTY_FIELD_W;
     localparam int unsigned WORD_W = CHANNEL_OFFSET + CHANNEL_W;
 
     function automatic logic [WORD_W-1:0] pack_word(
         input logic [DATA_W-1:0] data,
         input logic startofpacket,
         input logic endofpacket,
-        input logic [EMPTY_PORT_W-1:0] empty,
+        input logic [EMPTY_W-1:0] empty,
         input logic [CHANNEL_PORT_W-1:0] channel
     );
         logic [WORD_W-1:0] result;
@@ -74,7 +76,7 @@ module avalon_st_async_fifo #(
             result[DATA_OFFSET +: DATA_W] = data;
             result[SOP_OFFSET] = startofpacket;
             result[EOP_OFFSET] = endofpacket;
-            for (int unsigned i = 0; i < EMPTY_W; i++) begin
+            for (int unsigned i = 0; i < EMPTY_FIELD_W; i++) begin
                 result[EMPTY_OFFSET + i] = empty[i];
             end
             for (int unsigned i = 0; i < CHANNEL_W; i++) begin
@@ -84,13 +86,13 @@ module avalon_st_async_fifo #(
         end
     endfunction
 
-    function automatic logic [EMPTY_PORT_W-1:0] unpack_empty(
+    function automatic logic [EMPTY_W-1:0] unpack_empty(
         input logic [WORD_W-1:0] word
     );
-        logic [EMPTY_PORT_W-1:0] result;
+        logic [EMPTY_W-1:0] result;
         begin
             result = '0;
-            for (int unsigned i = 0; i < EMPTY_W; i++) begin
+            for (int unsigned i = 0; i < EMPTY_FIELD_W; i++) begin
                 result[i] = word[EMPTY_OFFSET + i];
             end
             return result;
@@ -195,10 +197,11 @@ module avalon_st_async_fifo #(
     logic overflow_reg = 1'b0;
 
     localparam int unsigned OUTPUT_QUEUE_DEPTH = 4;
-    wire [WORD_W-1:0] ram_read_word;
+    localparam int unsigned OUTPUT_COUNT_W = $clog2(OUTPUT_QUEUE_DEPTH + 1);
+    logic [WORD_W-1:0] ram_read_word;
     logic [1:0] read_pending = '0;
     logic [WORD_W-1:0] output_queue [0:OUTPUT_QUEUE_DEPTH-1];
-    logic [$clog2(OUTPUT_QUEUE_DEPTH + 1)-1:0] output_count = '0;
+    logic [OUTPUT_COUNT_W-1:0] output_count = '0;
 
     (* altera_attribute = "-name SYNCHRONIZER_IDENTIFICATION FORCED; -name PRESERVE_REGISTER ON" *)
     logic [2:0] asi_reset_pipe = '1;
@@ -212,6 +215,12 @@ module avalon_st_async_fifo #(
             $fatal(1, "avalon_st_async_fifo: DEPTH must be at least 2");
         if ((DATA_W < 8) || ((DATA_W % 8) != 0))
             $fatal(1, "avalon_st_async_fifo: DATA_W must be a multiple of 8");
+        if (PTR_W != (ADDR_W + 1))
+            $fatal(1, "avalon_st_async_fifo: PTR_W must retain its derived value");
+        if (EMPTY_W != ((DATA_W > 8) ? EMPTY_FIELD_W : 1))
+            $fatal(1, "avalon_st_async_fifo: EMPTY_W must retain its derived value");
+        if (CHANNEL_PORT_W != ((CHANNEL_W > 0) ? CHANNEL_W : 1))
+            $fatal(1, "avalon_st_async_fifo: CHANNEL_PORT_W must retain its derived value");
         if (DROP_OVERSIZE_FRAME && !FRAME_FIFO)
             $fatal(1, "avalon_st_async_fifo: DROP_OVERSIZE_FRAME requires FRAME_FIFO");
         if (DROP_WHEN_FULL && !(FRAME_FIFO && DROP_OVERSIZE_FRAME))
@@ -420,7 +429,7 @@ module avalon_st_async_fifo #(
         logic [PTR_W-1:0] next_rd_ptr;
         logic [WORD_W-1:0] next_output_queue [0:OUTPUT_QUEUE_DEPTH-1];
         logic [1:0] next_read_pending;
-        logic [$clog2(OUTPUT_QUEUE_DEPTH + 1)-1:0] next_output_count;
+        logic [OUTPUT_COUNT_W-1:0] next_output_count;
         integer unsigned reserved_count;
 
         if (aso_reset_local) begin
@@ -494,3 +503,5 @@ module avalon_st_async_fifo #(
     assign status_full = wr_full;
     assign status_overflow = overflow_reg;
 endmodule
+
+`resetall

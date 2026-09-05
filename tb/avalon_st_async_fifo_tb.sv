@@ -1,7 +1,9 @@
 // SPDX-FileCopyrightText: 2026 Enio Kaljic
 // SPDX-License-Identifier: CERN-OHL-S-2.0
 
-`timescale 1ns/1ps
+`resetall
+`timescale 1ns / 1ps
+`default_nettype none
 
 module avalon_st_async_fifo_tb;
     localparam time ASI_PERIOD = 10ns;
@@ -14,19 +16,19 @@ module avalon_st_async_fifo_tb;
 
     logic [7:0] asi_data = '0;
     logic asi_valid = 1'b0;
-    wire asi_ready;
+    logic asi_ready;
     logic asi_sop = 1'b0;
     logic asi_eop = 1'b0;
-    wire [7:0] aso_data;
-    wire aso_valid;
+    logic [7:0] aso_data;
+    logic aso_valid;
     logic aso_ready = 1'b1;
-    wire aso_sop;
-    wire aso_eop;
+    logic aso_sop;
+    logic aso_eop;
 
-    wire [3:0] status_depth;
-    wire status_almost_full;
-    wire status_full;
-    wire status_overflow;
+    logic [3:0] status_depth;
+    logic status_almost_full;
+    logic status_full;
+    logic status_overflow;
     logic overflow_seen = 1'b0;
 
     always #(ASI_PERIOD / 2) asi_clk = ~asi_clk;
@@ -191,3 +193,5 @@ module avalon_st_async_fifo_tb;
         $finish;
     end
 endmodule
+
+`resetall

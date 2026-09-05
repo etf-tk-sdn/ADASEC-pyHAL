@@ -1,24 +1,26 @@
 // SPDX-FileCopyrightText: 2026 Enio Kaljic
 // SPDX-License-Identifier: CERN-OHL-S-2.0
 
+`resetall
+`timescale 1ns / 1ps
+`default_nettype none
+
 module ethernet_mac_init #(
     parameter logic [47:0] MAC_ADDRESS = 48'h020000000001,
     parameter logic [4:0] PHY_ADDRESS = 5'b10000
 ) (
-    input  logic        clk,
-    input  logic        reset,
-    input  logic        phy_int_n,
-    output logic [7:0]  reg_addr,
-    output logic [31:0] reg_data_in,
-    input  logic [31:0] reg_data_out,
-    output logic        reg_rd,
-    output logic        reg_wr,
-    input  logic        reg_busy,
-    output logic        done,
-    output logic        error
+    input  wire logic        clk,
+    input  wire logic        reset,
+    input  wire logic        phy_int_n,
+    output wire logic [7:0]  reg_addr,
+    output wire logic [31:0] reg_data_in,
+    input  wire logic [31:0] reg_data_out,
+    output wire logic        reg_rd,
+    output wire logic        reg_wr,
+    input  wire logic        reg_busy,
+    output wire logic        done,
+    output wire logic        error
 );
-    import avalon_st_fifo_pkg::clog2;
-
     typedef enum logic [4:0] {
         WAIT_FOR_PHY,
         WRITE_MAC_REGISTER,
@@ -60,8 +62,19 @@ module ethernet_mac_init #(
     localparam int unsigned PHY_RESET_POLL_LIMIT = 32767;
     localparam int unsigned MAC_RESET_POLL_LIMIT = 32767;
     localparam int unsigned CLOCK_SWITCH_COUNTER_MAX = 2499; // 20 us
+    localparam int unsigned PHY_STARTUP_COUNTER_W =
+        $clog2(PHY_STARTUP_COUNTER_MAX + 1);
+    localparam int unsigned LINK_POLL_COUNTER_W =
+        $clog2(LINK_POLL_COUNTER_MAX + 1);
+    localparam int unsigned PHY_RESET_POLL_W =
+        $clog2(PHY_RESET_POLL_LIMIT + 1);
+    localparam int unsigned MAC_RESET_POLL_W =
+        $clog2(MAC_RESET_POLL_LIMIT + 1);
+    localparam int unsigned CLOCK_SWITCH_COUNTER_W =
+        $clog2(CLOCK_SWITCH_COUNTER_MAX + 1);
 
     localparam int unsigned MAC_WRITE_COUNT = 5;
+    localparam int unsigned MAC_WRITE_INDEX_W = $clog2(MAC_WRITE_COUNT);
     localparam logic [7:0] MAC_WRITE_ADDRESSES [0:MAC_WRITE_COUNT-1] = '{
         8'h02, // command_config
         8'h03, // mac_0
@@ -118,12 +131,12 @@ module ethernet_mac_init #(
     state_t state = WAIT_FOR_PHY;
     state_t next_state = WAIT_FOR_PHY;
 
-    logic [clog2(MAC_WRITE_COUNT)-1:0] mac_write_index = '0;
-    logic [clog2(PHY_STARTUP_COUNTER_MAX+1)-1:0] startup_counter = '0;
-    logic [clog2(LINK_POLL_COUNTER_MAX+1)-1:0] link_poll_counter = '0;
-    logic [clog2(PHY_RESET_POLL_LIMIT+1)-1:0] phy_reset_poll_counter = '0;
-    logic [clog2(MAC_RESET_POLL_LIMIT+1)-1:0] mac_reset_poll_counter = '0;
-    logic [clog2(CLOCK_SWITCH_COUNTER_MAX+1)-1:0] clock_switch_counter = '0;
+    logic [MAC_WRITE_INDEX_W-1:0] mac_write_index = '0;
+    logic [PHY_STARTUP_COUNTER_W-1:0] startup_counter = '0;
+    logic [LINK_POLL_COUNTER_W-1:0] link_poll_counter = '0;
+    logic [PHY_RESET_POLL_W-1:0] phy_reset_poll_counter = '0;
+    logic [MAC_RESET_POLL_W-1:0] mac_reset_poll_counter = '0;
+    logic [CLOCK_SWITCH_COUNTER_W-1:0] clock_switch_counter = '0;
 
     logic phy_int_meta = 1'b1;
     logic phy_int_sync = 1'b1;
@@ -135,7 +148,15 @@ module ethernet_mac_init #(
     logic [1:0] active_speed = 2'b10;
     logic active_full_duplex = 1'b1;
     logic initialization_done = 1'b0;
+    logic [7:0] reg_addr_reg;
+    logic [31:0] reg_data_in_reg;
+    logic reg_rd_reg;
+    logic reg_wr_reg;
 
+    assign reg_addr = reg_addr_reg;
+    assign reg_data_in = reg_data_in_reg;
+    assign reg_rd = reg_rd_reg;
+    assign reg_wr = reg_wr_reg;
     assign done = initialization_done;
     assign error = (state == FAILED);
 
@@ -470,118 +491,120 @@ module ethernet_mac_init #(
 
     // Moore FSM output logic.
     always_comb begin
-        reg_addr = '0;
-        reg_data_in = '0;
-        reg_rd = 1'b0;
-        reg_wr = 1'b0;
+        reg_addr_reg = '0;
+        reg_data_in_reg = '0;
+        reg_rd_reg = 1'b0;
+        reg_wr_reg = 1'b0;
 
         case (state)
             WRITE_MAC_REGISTER: begin
-                reg_addr = MAC_WRITE_ADDRESSES[mac_write_index];
-                reg_data_in = MAC_WRITE_DATA[mac_write_index];
-                reg_wr = 1'b1;
+                reg_addr_reg = MAC_WRITE_ADDRESSES[mac_write_index];
+                reg_data_in_reg = MAC_WRITE_DATA[mac_write_index];
+                reg_wr_reg = 1'b1;
             end
 
             WRITE_PHY_ADDRESS: begin
-                reg_addr = MDIO_ADDRESS_0_REGISTER;
-                reg_data_in[4:0] = PHY_ADDRESS;
-                reg_wr = 1'b1;
+                reg_addr_reg = MDIO_ADDRESS_0_REGISTER;
+                reg_data_in_reg[4:0] = PHY_ADDRESS;
+                reg_wr_reg = 1'b1;
             end
 
             READ_PHY_EXTENDED_CONTROL,
             VERIFY_PHY_EXTENDED_CONTROL_BEFORE_RESET,
             VERIFY_PHY_EXTENDED_CONTROL_AFTER_RESET: begin
-                reg_addr = PHY_EXTENDED_CONTROL;
-                reg_rd = 1'b1;
+                reg_addr_reg = PHY_EXTENDED_CONTROL;
+                reg_rd_reg = 1'b1;
             end
 
             WRITE_PHY_EXTENDED_CONTROL: begin
-                reg_addr = PHY_EXTENDED_CONTROL;
-                reg_data_in[15:0] = phy_extended_value;
-                reg_wr = 1'b1;
+                reg_addr_reg = PHY_EXTENDED_CONTROL;
+                reg_data_in_reg[15:0] = phy_extended_value;
+                reg_wr_reg = 1'b1;
             end
 
             READ_PHY_BASIC_CONTROL,
             READ_PHY_BASIC_CONTROL_FOR_RESTART,
             POLL_PHY_RESET: begin
-                reg_addr = PHY_BASIC_CONTROL;
-                reg_rd = 1'b1;
+                reg_addr_reg = PHY_BASIC_CONTROL;
+                reg_rd_reg = 1'b1;
             end
 
             WRITE_PHY_SOFTWARE_RESET,
             WRITE_PHY_AUTONEG_RESTART: begin
-                reg_addr = PHY_BASIC_CONTROL;
-                reg_data_in[15:0] = phy_basic_value;
-                reg_wr = 1'b1;
+                reg_addr_reg = PHY_BASIC_CONTROL;
+                reg_data_in_reg[15:0] = phy_basic_value;
+                reg_wr_reg = 1'b1;
             end
 
             READ_PHY_AUTONEG_ADVERTISEMENT: begin
-                reg_addr = PHY_AUTONEG_ADVERTISEMENT;
-                reg_rd = 1'b1;
+                reg_addr_reg = PHY_AUTONEG_ADVERTISEMENT;
+                reg_rd_reg = 1'b1;
             end
 
             WRITE_PHY_AUTONEG_ADVERTISEMENT: begin
-                reg_addr = PHY_AUTONEG_ADVERTISEMENT;
-                reg_data_in[15:0] = phy_advertisement_value;
-                reg_wr = 1'b1;
+                reg_addr_reg = PHY_AUTONEG_ADVERTISEMENT;
+                reg_data_in_reg[15:0] = phy_advertisement_value;
+                reg_wr_reg = 1'b1;
             end
 
             WRITE_PHY_INTERRUPT_ENABLE: begin
-                reg_addr = PHY_INTERRUPT_ENABLE;
-                reg_data_in[15:0] = PHY_INTERRUPT_ENABLE_MASK;
-                reg_wr = 1'b1;
+                reg_addr_reg = PHY_INTERRUPT_ENABLE;
+                reg_data_in_reg[15:0] = PHY_INTERRUPT_ENABLE_MASK;
+                reg_wr_reg = 1'b1;
             end
 
             CLEAR_PHY_INTERRUPT_STATUS,
             READ_RUNTIME_INTERRUPT_STATUS: begin
-                reg_addr = PHY_INTERRUPT_STATUS;
-                reg_rd = 1'b1;
+                reg_addr_reg = PHY_INTERRUPT_STATUS;
+                reg_rd_reg = 1'b1;
             end
 
             READ_INITIAL_PHY_STATUS,
             READ_RUNTIME_PHY_STATUS: begin
-                reg_addr = PHY_SPECIFIC_STATUS;
-                reg_rd = 1'b1;
+                reg_addr_reg = PHY_SPECIFIC_STATUS;
+                reg_rd_reg = 1'b1;
             end
 
             WRITE_MAC_SOFTWARE_RESET: begin
-                reg_addr = COMMAND_CONFIG_REGISTER;
+                reg_addr_reg = COMMAND_CONFIG_REGISTER;
                 if (!initialization_done) begin
-                    reg_data_in = make_command_config(
+                    reg_data_in_reg = make_command_config(
                         negotiated_speed, negotiated_full_duplex, 1'b0
                     ) | 32'h00002000;
                 end else begin
-                    reg_data_in = make_command_config(
+                    reg_data_in_reg = make_command_config(
                         active_speed, active_full_duplex, 1'b0
                     ) | 32'h00002000;
                 end
-                reg_wr = 1'b1;
+                reg_wr_reg = 1'b1;
             end
 
             POLL_MAC_SOFTWARE_RESET: begin
-                reg_addr = COMMAND_CONFIG_REGISTER;
-                reg_rd = 1'b1;
+                reg_addr_reg = COMMAND_CONFIG_REGISTER;
+                reg_rd_reg = 1'b1;
             end
 
             WRITE_INITIAL_MAC_MODE,
             WRITE_RUNTIME_MAC_MODE: begin
-                reg_addr = COMMAND_CONFIG_REGISTER;
-                reg_data_in = make_command_config(
+                reg_addr_reg = COMMAND_CONFIG_REGISTER;
+                reg_data_in_reg = make_command_config(
                     negotiated_speed, negotiated_full_duplex, 1'b0
                 );
-                reg_wr = 1'b1;
+                reg_wr_reg = 1'b1;
             end
 
             WRITE_INITIAL_MAC_ENABLE,
             WRITE_RUNTIME_MAC_ENABLE: begin
-                reg_addr = COMMAND_CONFIG_REGISTER;
-                reg_data_in = make_command_config(
+                reg_addr_reg = COMMAND_CONFIG_REGISTER;
+                reg_data_in_reg = make_command_config(
                     negotiated_speed, negotiated_full_duplex, 1'b1
                 );
-                reg_wr = 1'b1;
+                reg_wr_reg = 1'b1;
             end
 
             default: ;
         endcase
     end
 endmodule
+
+`resetall

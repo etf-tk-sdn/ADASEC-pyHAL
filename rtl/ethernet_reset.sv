@@ -1,11 +1,15 @@
 // SPDX-FileCopyrightText: 2026 Enio Kaljic
 // SPDX-License-Identifier: CERN-OHL-S-2.0
 
+`resetall
+`timescale 1ns / 1ps
+`default_nettype none
+
 module ethernet_reset (
-    input  logic clk,
-    input  logic rst_n,
-    input  logic pll_locked,
-    output logic system_reset
+    input  wire logic clk,
+    input  wire logic rst_n,
+    input  wire logic pll_locked,
+    output wire logic system_reset
 );
     // PHY RESET_N must remain asserted for at least 10 ms. Counting 2,621,440
     // periods of the 125 MHz system clock keeps reset active for about 20.97 ms.
@@ -30,3 +34,5 @@ module ethernet_reset (
         end
     end
 endmodule
+
+`resetall

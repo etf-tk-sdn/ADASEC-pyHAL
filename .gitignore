@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: NONE
+# SPDX-License-Identifier: CERN-OHL-S-2.0
+
 # Quartus compilation databases and generated output in each example
 **/db/
 **/incremental_db/
@@ -19,6 +22,9 @@ transcript
 **/work/
 **/questa_lib/
 **/modelsim_lib/
+
+# Python bytecode caches
+**/__pycache__/
 
 # Local backups and editor temporary files
 *.bak
