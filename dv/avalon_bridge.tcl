@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Enio Kaljic
-# SPDX-License-Identifier: CERN-OHL-S-2.0
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 proc protocol_error {message} {
     puts "@ERR $message"
