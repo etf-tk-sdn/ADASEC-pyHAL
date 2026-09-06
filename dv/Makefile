@@ -25,8 +25,7 @@ VERILOG_SOURCES += $(CURDIR)/adasec_top_tb.sv
 COCOTB_TEST_MODULES = testbench
 
 # Build outputs
-SIM_OUTPUT = $(ROOT_DIR)/build/dv
-SIM_BUILD = $(SIM_OUTPUT)/sim_build
+SIM_BUILD = $(CURDIR)/sim_build
 
 # Verilator flags
 EXTRA_ARGS += --sv

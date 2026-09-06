@@ -1,11 +1,10 @@
 # SPDX-FileCopyrightText: 2026 Enio Kaljic
 # SPDX-License-Identifier: CERN-OHL-S-2.0
 
-import threading
-
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, Timer
+from cocotb.task import bridge
+from cocotb.triggers import RisingEdge
 
 from csr.lib import NormalCallbackSet
 from csr.reg_model.csr import csr_cls
@@ -29,7 +28,6 @@ async def create_csr(dut):
     await RisingEdge(dut.clk)
 
     hw = RTLSimulator(dut)
-    cocotb.start_soon(hw.worker())
 
     return csr_cls(
         callbacks=NormalCallbackSet(
@@ -41,23 +39,7 @@ async def create_csr(dut):
 
 async def run_reg_test(dut, test_func):
     csr = await create_csr(dut)
-    exception = None
-
-    def worker():
-        nonlocal exception
-        try:
-            test_func(csr)
-        except BaseException as exc:
-            exception = exc
-
-    thread = threading.Thread(target=worker, daemon=True)
-    thread.start()
-    while thread.is_alive():
-        await Timer(1, unit="ns")
-    thread.join()
-
-    if exception is not None:
-        raise exception
+    await bridge(test_func)(csr)
 
 
 @cocotb.test()

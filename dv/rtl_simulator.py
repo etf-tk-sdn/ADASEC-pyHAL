@@ -1,10 +1,8 @@
 # SPDX-FileCopyrightText: 2026 Enio Kaljic
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import queue
-import threading
-
-from cocotb.triggers import FallingEdge, ReadOnly, RisingEdge, Timer
+from cocotb.task import resume
+from cocotb.triggers import FallingEdge, ReadOnly, RisingEdge
 
 
 class RTLSimulator:
@@ -12,24 +10,6 @@ class RTLSimulator:
 
     def __init__(self, dut):
         self.dut = dut
-        self.req_queue = queue.Queue()
-
-    async def worker(self):
-        while True:
-            if self.req_queue.empty():
-                await Timer(1, unit="ns")
-                continue
-
-            request = self.req_queue.get()
-            try:
-                if request["type"] == "read":
-                    request["result"] = await self._read(request["addr"])
-                else:
-                    await self._write(request["addr"], request["data"])
-            except BaseException as exc:
-                request["exception"] = exc
-            finally:
-                request["event"].set()
 
     async def _read(self, byte_address):
         await FallingEdge(self.dut.clk)
@@ -73,34 +53,12 @@ class RTLSimulator:
         await FallingEdge(self.dut.clk)
         self.dut.avalon_write.value = 0
 
-    @staticmethod
-    def _wait_for_request(request):
-        if not request["event"].wait(timeout=30):
-            raise TimeoutError("Timed out waiting for the RTL Avalon-MM transaction")
-        if request["exception"] is not None:
-            raise request["exception"]
-
-    def read(self, addr, width=32, accesswidth=32):
+    @resume
+    async def read(self, addr, width=32, accesswidth=32):
         del width, accesswidth
-        request = {
-            "type": "read",
-            "addr": addr,
-            "event": threading.Event(),
-            "result": None,
-            "exception": None,
-        }
-        self.req_queue.put(request)
-        self._wait_for_request(request)
-        return request["result"]
+        return await self._read(addr)
 
-    def write(self, addr, data, width=32, accesswidth=32):
+    @resume
+    async def write(self, addr, data, width=32, accesswidth=32):
         del width, accesswidth
-        request = {
-            "type": "write",
-            "addr": addr,
-            "data": data,
-            "event": threading.Event(),
-            "exception": None,
-        }
-        self.req_queue.put(request)
-        self._wait_for_request(request)
+        await self._write(addr, data)
