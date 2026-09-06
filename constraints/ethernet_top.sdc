@@ -205,4 +205,9 @@ set_false_path -to [get_ports {LEDR[*] LEDG[*] ENET0_RESET_N ENET1_RESET_N}]
 set_false_path -from [get_ports {ENET0_MDIO ENET1_MDIO}]
 set_false_path -to [get_ports {ENET0_MDC ENET1_MDC ENET0_MDIO ENET1_MDIO}]
 
+# The device's dedicated JTAG pins belong to Quartus' internal JTAG interface,
+# not to the user timing interface, so external I/O delays do not apply.
+set_false_path -from [get_ports {altera_reserved_tdi altera_reserved_tms}]
+set_false_path -to [get_ports {altera_reserved_tdo}]
+
 derive_clock_uncertainty
