@@ -78,7 +78,7 @@ module avalon_st_fifo #(
             for (int unsigned i = 0; i < EMPTY_FIELD_W; i++) begin
                 result[EMPTY_OFFSET + i] = empty[i];
             end
-            for (int unsigned i = 0; i < CHANNEL_W; i++) begin
+            for (int unsigned i = 0; i != CHANNEL_W; i++) begin
                 result[CHANNEL_OFFSET + i] = channel[i];
             end
             return result;
@@ -104,7 +104,7 @@ module avalon_st_fifo #(
         logic [CHANNEL_PORT_W-1:0] result;
         begin
             result = '0;
-            for (int unsigned i = 0; i < CHANNEL_W; i++) begin
+            for (int unsigned i = 0; i != CHANNEL_W; i++) begin
                 result[i] = word[CHANNEL_OFFSET + i];
             end
             return result;
@@ -125,21 +125,21 @@ module avalon_st_fifo #(
     (* ramstyle = "no_rw_check" *)
     logic [WORD_W-1:0] mem [0:MEM_DEPTH-1];
 
-    logic [PTR_W-1:0] wr_ptr = '0;
-    logic [PTR_W-1:0] wr_ptr_commit = '0;
-    logic [PTR_W-1:0] rd_ptr = '0;
+    logic [PTR_W-1:0] wr_ptr;
+    logic [PTR_W-1:0] wr_ptr_commit;
+    logic [PTR_W-1:0] rd_ptr;
 
     logic full;
     logic full_wr;
     logic mem_empty;
-    logic drop_frame = 1'b0;
-    logic send_frame = 1'b0;
-    logic [PTR_W-1:0] depth_reg = '0;
-    logic overflow_reg = 1'b0;
+    logic drop_frame;
+    logic send_frame;
+    logic [PTR_W-1:0] depth_reg;
+    logic overflow_reg;
     logic asi_ready_int;
 
-    logic [WORD_W-1:0] aso_word_reg = '0;
-    logic aso_valid_reg = 1'b0;
+    logic [WORD_W-1:0] aso_word_reg;
+    logic aso_valid_reg;
 
     initial begin : parameter_validation
         if (DEPTH < 2)

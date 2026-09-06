@@ -4,6 +4,5 @@
 `verilator_config
 
 lint_off -rule PINCONNECTEMPTY
-lint_off -rule UNUSEDPARAM -file "csr_pkg.sv" -match "*"
-lint_off -rule MULTIDRIVEN -file "csr.sv" -match "*"
-
+lint_off -rule UNUSEDPARAM -file "*/hal/build/rtl/csr_pkg.sv" -match "*"
+lint_off -rule MULTIDRIVEN -file "*/hal/build/rtl/csr.sv" -match "*"

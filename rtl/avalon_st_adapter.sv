@@ -78,6 +78,9 @@ module avalon_st_adapter #(
             localparam int unsigned SEGMENT_W =
                 (SEGMENT_COUNT > 1) ? $clog2(SEGMENT_COUNT) : 1;
 
+            typedef logic [SEGMENT_W-1:0] segment_t;
+            typedef logic [M_EMPTY_W-1:0] m_empty_t;
+
             logic [M_DATA_W-1:0] data_reg;
             logic valid_reg;
             logic startofpacket_reg;
@@ -113,15 +116,16 @@ module avalon_st_adapter #(
                     end
 
                     if (asi_endofpacket ||
-                        (segment_reg == SEGMENT_COUNT-1)) begin
+                        (segment_reg == segment_t'(SEGMENT_COUNT-1))) begin
                         valid_reg <= 1'b1;
                         endofpacket_reg <= asi_endofpacket;
                         segment_reg <= '0;
 
                         if (asi_endofpacket) begin
-                            empty_reg <=
-                                (SEGMENT_COUNT-1-segment_reg)*S_BYTE_COUNT +
-                                asi_empty;
+                            empty_reg <= m_empty_t'(
+                                (SEGMENT_COUNT-1-int'(segment_reg))*S_BYTE_COUNT +
+                                int'(asi_empty)
+                            );
                         end else begin
                             empty_reg <= '0;
                         end
@@ -145,6 +149,9 @@ module avalon_st_adapter #(
             localparam int unsigned SEGMENT_W =
                 (SEGMENT_COUNT > 1) ? $clog2(SEGMENT_COUNT) : 1;
 
+            typedef logic [SEGMENT_W-1:0] segment_t;
+            typedef logic [M_EMPTY_W-1:0] m_empty_t;
+
             logic [S_DATA_W-1:0] data_reg;
             logic valid_reg;
             logic startofpacket_reg;
@@ -161,8 +168,10 @@ module avalon_st_adapter #(
                 int unsigned valid_byte_count;
                 logic [SEGMENT_W-1:0] result;
                 begin
-                    valid_byte_count = S_BYTE_COUNT - empty;
-                    result = (valid_byte_count-1) / M_BYTE_COUNT;
+                    valid_byte_count = S_BYTE_COUNT - int'(empty);
+                    result = segment_t'(
+                        (valid_byte_count-1) / M_BYTE_COUNT
+                    );
                     return result;
                 end
             endfunction
@@ -175,10 +184,12 @@ module avalon_st_adapter #(
                 int unsigned remainder;
                 logic [M_EMPTY_W-1:0] result;
                 begin
-                    valid_byte_count = S_BYTE_COUNT - empty;
+                    valid_byte_count = S_BYTE_COUNT - int'(empty);
                     remainder = valid_byte_count % M_BYTE_COUNT;
-                    result = (remainder == 0) ?
-                        '0 : M_BYTE_COUNT-remainder;
+                    if (remainder == 0)
+                        result = '0;
+                    else
+                        result = m_empty_t'(M_BYTE_COUNT-remainder);
                     return result;
                 end
             endfunction
@@ -217,7 +228,7 @@ module avalon_st_adapter #(
                             calculate_last_segment(asi_empty);
                         last_empty_reg <= calculate_last_empty(asi_empty);
                     end else begin
-                        last_segment_reg <= SEGMENT_COUNT-1;
+                        last_segment_reg <= segment_t'(SEGMENT_COUNT-1);
                         last_empty_reg <= '0;
                     end
                 end
