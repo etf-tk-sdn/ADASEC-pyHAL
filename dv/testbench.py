@@ -10,7 +10,7 @@ from csr.lib import NormalCallbackSet
 from csr.reg_model.csr import csr_cls
 
 from rtl_simulator import RTLSimulator
-from tests import test1, test2, test3, test4
+import tests as shared_tests
 
 
 async def create_csr(dut):
@@ -43,20 +43,25 @@ async def run_reg_test(dut, test_func):
 
 
 @cocotb.test()
-async def test_1(dut):
-    await run_reg_test(dut, test1)
+async def test_1_csr_loopback(dut):
+    await run_reg_test(dut, shared_tests.test_1_csr_loopback)
 
 
 @cocotb.test()
-async def test_2(dut):
-    await run_reg_test(dut, test2)
+async def test_2_partial_rx_recovery(dut):
+    await run_reg_test(dut, shared_tests.test_2_partial_rx_recovery)
 
 
 @cocotb.test()
-async def test_3(dut):
-    await run_reg_test(dut, test3)
+async def test_3_single_frame(dut):
+    await run_reg_test(dut, shared_tests.test_3_single_frame)
 
 
 @cocotb.test()
-async def test_4(dut):
-    await run_reg_test(dut, test4)
+async def test_4_back_to_back_frames(dut):
+    await run_reg_test(dut, shared_tests.test_4_back_to_back_frames)
+
+
+@cocotb.test()
+async def test_5_maximum_frame(dut):
+    await run_reg_test(dut, shared_tests.test_5_maximum_frame)

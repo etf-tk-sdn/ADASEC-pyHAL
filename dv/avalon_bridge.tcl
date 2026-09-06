@@ -66,7 +66,6 @@ while {[gets stdin line] >= 0} {
             set address [expr {wide([lindex $tokens 1])}]
             set result [master_read_32 $claimed_master $address 1]
             set value [lindex $result 0]
-            after 1
         } read_error]} {
             protocol_error "READ_FAILED $read_error"
         } else {
@@ -82,7 +81,6 @@ while {[gets stdin line] >= 0} {
             set address [expr {wide([lindex $tokens 1])}]
             set value [expr {wide([lindex $tokens 2])}]
             master_write_32 $claimed_master $address $value
-            after 1
         } write_error]} {
             protocol_error "WRITE_FAILED $write_error"
         } else {
